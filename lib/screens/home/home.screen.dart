@@ -27,48 +27,63 @@ class _HomeState extends State<Home> {
         child: ListView(
           children: [
             ResponsiveLayout(
-              stable: Row(
-                children: [
-                  Flexible(
-                    flex: 2,
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 24),
-                          child: SalesChart(
-                            data: [
-                              LineChartModel(amount: 5000),
-                              LineChartModel(amount: 6000),
-                              LineChartModel(amount: 7000),
-                              LineChartModel(amount: 1000),
-                              LineChartModel(amount: 3500),
-                              LineChartModel(amount: 2500),
-                              LineChartModel(amount: 3000),
-                              LineChartModel(amount: 8000),
-                              LineChartModel(amount: 2000),
-                              LineChartModel(amount: 1000),
-                              LineChartModel(amount: 1500),
-                              LineChartModel(amount: 4500),
-                            ],
-                            width: width * 0.65 - 48,
-                            height: 190,
-                          ),
-                        ),
-                        RecentProducts(),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    child: Column(
-                      children: [],
-                    ),
-                  ),
-                ],
-              ),
+              mobile: DesktopHome(width: width),
+              desktop: DesktopHome(width: width),
             ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class DesktopHome extends StatelessWidget {
+  const DesktopHome({
+    Key key,
+    @required this.width,
+  }) : super(key: key);
+
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Flexible(
+          flex: 2,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: SalesChart(
+                  data: [
+                    LineChartModel(amount: 5000),
+                    LineChartModel(amount: 6000),
+                    LineChartModel(amount: 7000),
+                    LineChartModel(amount: 1000),
+                    LineChartModel(amount: 3500),
+                    LineChartModel(amount: 2500),
+                    LineChartModel(amount: 3000),
+                    LineChartModel(amount: 8000),
+                    LineChartModel(amount: 2000),
+                    LineChartModel(amount: 1000),
+                    LineChartModel(amount: 1500),
+                    LineChartModel(amount: 4500),
+                  ],
+                  width: width * 0.65 - 48,
+                  height: 190,
+                ),
+              ),
+              RecentProducts(),
+            ],
+          ),
+        ),
+        Flexible(
+          child: Column(
+            children: [],
+          ),
+        ),
+      ],
     );
   }
 }

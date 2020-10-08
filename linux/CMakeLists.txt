@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(runner LANGUAGES CXX)
 
-set(BINARY_NAME "invictus")
-set(APPLICATION_ID "com.example.invictus")
+set(BINARY_NAME "invictus_app")
+set(APPLICATION_ID "com.example.invictus_app")
 
 cmake_policy(SET CMP0063 NEW)
 

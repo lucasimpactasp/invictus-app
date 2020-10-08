@@ -1,40 +1,27 @@
 import 'package:flutter/material.dart';
-import 'package:invictus/core/models/widgets/responsive/responsive.model.dart';
 import 'package:invictus/utils/responsive/responsive.utils.dart';
 
-class ResponsiveLayout extends StatefulWidget {
+class ResponsiveLayout extends StatelessWidget {
   final Widget mobile;
   final Widget tabletPortrait;
   final Widget tabletLandscape;
   final Widget desktop;
   final Widget stable;
 
-  ResponsiveLayout(
-      {this.mobile,
-      this.tabletPortrait,
-      this.tabletLandscape,
-      this.desktop,
-      this.stable});
-
-  @override
-  _ResponsiveLayoutState createState() => _ResponsiveLayoutState();
-}
-
-class _ResponsiveLayoutState extends State<ResponsiveLayout> {
-  DeviceScreenType deviceScreenType;
-  bool alreadyGeneratedOrientation = false;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  ResponsiveLayout({
+    @required this.mobile,
+    @required this.desktop,
+    this.tabletPortrait,
+    this.tabletLandscape,
+    this.stable,
+  });
 
   void getDeviceScreenType(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
 
-    if (screenSize.width <= ResponsiveUtils.untilMobileSize) {
+    if (screenSize.width <= ResponsiveUtils.mobileSize) {
       setState(() => deviceScreenType = DeviceScreenType.Mobile);
-    } else if (screenSize.width > ResponsiveUtils.untilMobileSize &&
+    } else if (screenSize.width > ResponsiveUtils.mobileSize &&
         screenSize.width <= ResponsiveUtils.fromTabletPortraitSize) {
       setState(() => deviceScreenType = DeviceScreenType.TabletPortrait);
     } else if (screenSize.width > ResponsiveUtils.fromTabletPortraitSize &&
@@ -48,33 +35,25 @@ class _ResponsiveLayoutState extends State<ResponsiveLayout> {
     }
   }
 
-  Widget generateContent() {
-    switch (deviceScreenType) {
-      case DeviceScreenType.Mobile:
-        return widget.mobile;
-      case DeviceScreenType.TabletPortrait:
-        return widget.tabletPortrait;
-      case DeviceScreenType.TabletLandscape:
-        return widget.tabletLandscape;
-      case DeviceScreenType.Desktop:
-        return widget.desktop;
-      case DeviceScreenType.Stable:
-        return widget.stable;
-      default:
-        return Container();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (!alreadyGeneratedOrientation) {
-      getDeviceScreenType(context);
-    }
-    
-    return Column(
-      children: [
-        generateContent(),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > ResponsiveUtils.stableSize) {
+          return stable ?? desktop;
+        } else if (constraints.maxWidth > ResponsiveUtils.tabletLandscapeSize &&
+            constraints.maxWidth <= ResponsiveUtils.desktopSize) {
+          return desktop;
+        } else if (constraints.maxWidth > ResponsiveUtils.tabletPortraitSize &&
+            constraints.maxWidth <= ResponsiveUtils.tabletLandscapeSize) {
+          return tabletLandscape ?? desktop;
+        } else if (constraints.maxWidth > ResponsiveUtils.mobileSize &&
+            constraints.maxWidth <= ResponsiveUtils.tabletPortraitSize) {
+          return tabletPortrait ?? mobile;
+        } else {
+          return mobile;
+        }
+      },
     );
   }
 }
