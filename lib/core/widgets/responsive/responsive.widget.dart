@@ -19,7 +19,7 @@ class ResponsiveLayout extends StatelessWidget {
   void getDeviceScreenType(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
 
-    if (screenSize.width <= ResponsiveUtils.mobileSize) {
+    /* if (screenSize.width <= ResponsiveUtils.mobileSize) {
       setState(() => deviceScreenType = DeviceScreenType.Mobile);
     } else if (screenSize.width > ResponsiveUtils.mobileSize &&
         screenSize.width <= ResponsiveUtils.fromTabletPortraitSize) {
@@ -32,7 +32,7 @@ class ResponsiveLayout extends StatelessWidget {
       setState(() => deviceScreenType = DeviceScreenType.Desktop);
     } else {
       setState(() => deviceScreenType = DeviceScreenType.Stable);
-    }
+    } */
   }
 
   @override

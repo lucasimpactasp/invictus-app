@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:invictus/core/models/product/product.model.dart';
+import 'package:invictus/services/product/product.service.dart';
 
 class RecentProducts extends StatefulWidget {
   @override
@@ -6,7 +8,22 @@ class RecentProducts extends StatefulWidget {
 }
 
 class _RecentProductsState extends State<RecentProducts> {
-  List products = [1, 2, 3];
+  List<Product> products;
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    final List productsResponse = await productService.getMany();
+
+    setState(() {
+      products =
+          productsResponse.map((product) => Product.fromJson(product)).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +47,7 @@ class _RecentProductsState extends State<RecentProducts> {
             children: products.map((product) {
               return Expanded(
                 child: Container(
-                  child: Text(product.toString()),
+                  child: Text(product.name),
                 ),
               );
             }).toList(),

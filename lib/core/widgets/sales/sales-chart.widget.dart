@@ -30,6 +30,7 @@ class _SalesChartState extends State<SalesChart> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
