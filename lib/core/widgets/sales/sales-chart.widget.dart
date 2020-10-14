@@ -35,7 +35,7 @@ class _SalesChartState extends State<SalesChart> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey,
+            color: Colors.grey.withOpacity(.5),
             blurRadius: 8,
             offset: Offset.zero,
             spreadRadius: .3,

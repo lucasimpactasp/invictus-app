@@ -14,7 +14,6 @@ abstract class BaseService<T> {
   }
 
   Future<List<dynamic>> getMany({Map<String, dynamic> params}) async {
-    print('$baseUrl/${T.toString()}');
     final response = await Dio().get('$baseUrl/${T.toString().toLowerCase()}', queryParameters: params).catchError((error) => throw (error));
 
     if(response == null) {

@@ -1,4 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:invictus/utils/storage/storage.utils.dart';
 import 'package:oauth_dio/oauth_dio.dart';
 
 class _OAuthService {
@@ -19,10 +20,11 @@ class _OAuthService {
         )
         .catchError((error) => throw(error));
 
+    await StorageUtils.saveOrGet('accessToken', value: token.accessToken);
+    await StorageUtils.saveOrGet('refreshToken', value: token.refreshToken);
+
     return token;
 
-    /* await storage.write(key: 'access_token', value: token.accessToken);
-    await storage.write(key: 'refresh_token', value: token.refreshToken); */
   }
 
   OAuth _getOAuth() {
