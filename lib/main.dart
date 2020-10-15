@@ -9,7 +9,7 @@ void main() {
 class InvictusApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       routes: Routes.getRoutes(),
       initialRoute: '/login',
       theme: ThemeData(primaryColor: Colors.orangeAccent),
