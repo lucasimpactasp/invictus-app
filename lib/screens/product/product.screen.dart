@@ -14,7 +14,7 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  final productController = Get.put(ProductController());
+  final productController = Get.find<ProductController>();
 
   @override
   void initState() {
@@ -32,6 +32,7 @@ class _ProductScreenState extends State<ProductScreen> {
           children: [
             Container(
               width: double.infinity,
+              height: 300,
               decoration: product.imageUrl == null
                   ? null
                   : BoxDecoration(
@@ -39,6 +40,7 @@ class _ProductScreenState extends State<ProductScreen> {
                         image: NetworkImage(
                           product.imageUrl,
                         ),
+                        fit: BoxFit.cover,
                       ),
                     ),
             ),
@@ -47,17 +49,13 @@ class _ProductScreenState extends State<ProductScreen> {
               children: [
                 Column(
                   children: [
-                    Obx(
-                      () => Text(
-                        product.id ?? '',
-                      ),
+                    Text(product.id ?? ''),
+                    Text(product.name ?? ''),
+                    Text('Quantidade: ${product.quantity?.toString() ?? ''}'),
+                    Text(
+                      CurrencyUtil.addCurrencyMask(product.price ?? 0),
                     ),
-                    //Text(product.name ?? ''),
-                    //Text('Quantidade: ${product.quantity?.toString() ?? ''}'),
-                    //Text(
-                    //CurrencyUtil.addCurrencyMask(product.price ?? 0),
-                    //),
-                    //Text('Dimensão: ${product.dimension ?? ''}'),
+                    Text('Dimensão: ${product.dimension ?? ''}'),
                   ],
                 ),
                 Wrap(

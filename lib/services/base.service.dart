@@ -1,15 +1,25 @@
 import 'package:dio/dio.dart';
+import 'package:invictus/services/oauth/oauth.service.dart';
+import 'package:oauth_dio/oauth_dio.dart';
 
-abstract class BaseService {
-  String baseUrl = 'http://localhost:3000';
+abstract class BaseService<T> {
+  final String baseUrl = 'http://10.0.2.2:3000';
 
   String endpoint;
+  Dio dio;
 
-  BaseService(this.endpoint);
+  BaseService(this.endpoint) {
+    dio = Dio(
+      BaseOptions(
+        baseUrl: baseUrl,
+      ),
+    );
+    dio.interceptors.add(BearerInterceptor(oauth));
+  }
 
-  Future<dynamic> getOne(String id, {Map<String, dynamic> params}) async {
-    final response = await Dio()
-        .get('$baseUrl/$endpoint/$id', queryParameters: params)
+  Future<T> getOne(String id, {Map<String, dynamic> params}) async {
+    final response = await dio
+        .get('/$endpoint/$id', queryParameters: params)
         .catchError((error) => throw (error));
 
     if (response == null) {
@@ -19,9 +29,9 @@ abstract class BaseService {
     return response.data;
   }
 
-  Future<List<dynamic>> getMany({Map<String, dynamic> params}) async {
-    final response = await Dio()
-        .get('$baseUrl/$endpoint', queryParameters: params)
+  Future<List<T>> getMany({Map<String, dynamic> params}) async {
+    final response = await dio
+        .get('/$endpoint', queryParameters: params)
         .catchError((error) => throw (error));
 
     if (response == null) {

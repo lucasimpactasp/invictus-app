@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:invictus/services/oauth/oauth.service.dart';
-import 'package:invictus/utils/storage/storage.utils.dart';
+import 'package:oauth_dio/oauth_dio.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -12,6 +12,8 @@ class _LoginState extends State<Login> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  bool loading = false;
+
   @override
   void initState() {
     super.initState();
@@ -19,9 +21,10 @@ class _LoginState extends State<Login> {
   }
 
   void init() async {
-    final String refreshToken = await StorageUtils.saveOrGet('refreshToken');
-
-    if (refreshToken != null && refreshToken.isNotEmpty) {
+    setState(() => loading = true);
+    final OAuthToken token = await oauth.fetchOrRefreshAccessToken();
+    setState(() => loading = false);
+    if (token != null && token.refreshToken != null) {
       Get.offAllNamed('/home');
     }
   }
@@ -30,41 +33,46 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     return Scaffold(
-      body: ListView(
-        children: [
-          Form(
-            child: Column(
+      body: loading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ListView(
               children: [
-                TextField(
-                  decoration: InputDecoration(labelText: 'Usuário'),
-                  controller: usernameController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Senha'),
-                  controller: passwordController,
-                  obscureText: true,
-                ),
-                Container(
-                  width: double.infinity,
-                  child: RaisedButton(
-                    onPressed: () async {
-                      await oAuthService.login(usernameController.value.text,
-                          passwordController.value.text);
+                Form(
+                  child: Column(
+                    children: [
+                      TextField(
+                        decoration: InputDecoration(labelText: 'Usuário'),
+                        controller: usernameController,
+                      ),
+                      TextField(
+                        decoration: InputDecoration(labelText: 'Senha'),
+                        controller: passwordController,
+                        obscureText: true,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        child: RaisedButton(
+                          onPressed: () async {
+                            await oAuthService.login(
+                                usernameController.value.text,
+                                passwordController.value.text);
 
-                      Get.offAllNamed('/home');
-                    },
-                    color: theme.primaryColor,
-                    child: Text(
-                      'Entrar',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                            Get.offAllNamed('/home');
+                          },
+                          color: theme.primaryColor,
+                          child: Text(
+                            'Entrar',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
+                ),
               ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -16,25 +16,6 @@ class ResponsiveLayout extends StatelessWidget {
     this.stable,
   });
 
-  void getDeviceScreenType(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-
-    /* if (screenSize.width <= ResponsiveUtils.mobileSize) {
-      setState(() => deviceScreenType = DeviceScreenType.Mobile);
-    } else if (screenSize.width > ResponsiveUtils.mobileSize &&
-        screenSize.width <= ResponsiveUtils.fromTabletPortraitSize) {
-      setState(() => deviceScreenType = DeviceScreenType.TabletPortrait);
-    } else if (screenSize.width > ResponsiveUtils.fromTabletPortraitSize &&
-        screenSize.width <= ResponsiveUtils.fromTabletLandscapeSize) {
-      setState(() => deviceScreenType = DeviceScreenType.TabletLandscape);
-    } else if (screenSize.width > ResponsiveUtils.fromTabletLandscapeSize &&
-        screenSize.width <= ResponsiveUtils.untilDesktopSize) {
-      setState(() => deviceScreenType = DeviceScreenType.Desktop);
-    } else {
-      setState(() => deviceScreenType = DeviceScreenType.Stable);
-    } */
-  }
-
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
