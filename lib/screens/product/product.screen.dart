@@ -1,31 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
+import 'dart:io' show Platform;
 
 class ProductScreen extends StatefulWidget {
-  final String id;
+  final Product product;
 
-  ProductScreen({this.id});
+  ProductScreen({this.product});
 
   @override
   _ProductScreenState createState() => _ProductScreenState();
 }
 
 class _ProductScreenState extends State<ProductScreen> {
-  final productController = Get.find<ProductController>();
-
   @override
   void initState() {
     super.initState();
-    productController.getOne(widget.id);
   }
 
   @override
   Widget build(BuildContext context) {
-    final Product product = productController.activeProduct.value;
+    final ThemeData theme = Theme.of(context);
+
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: theme.primaryColor,
+        child: Icon(
+          Icons.edit,
+        ),
+      ),
       body: Container(
         constraints: BoxConstraints(maxWidth: 1200),
         child: ListView(
@@ -33,40 +38,74 @@ class _ProductScreenState extends State<ProductScreen> {
             Container(
               width: double.infinity,
               height: 300,
-              decoration: product.imageUrl == null
-                  ? null
-                  : BoxDecoration(
-                      image: DecorationImage(
-                        image: NetworkImage(
-                          product.imageUrl,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                    widget.product.imageUrl,
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: GestureDetector(
+                onTap: () => Get.back(),
+                child: Icon(
+                  Platform.isIOS ? Icons.arrow_back_ios : Icons.arrow_back,
+                  color: Colors.white,
+                ),
+              ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Text(product.id ?? ''),
-                    Text(product.name ?? ''),
-                    Text('Quantidade: ${product.quantity?.toString() ?? ''}'),
-                    Text(
-                      CurrencyUtil.addCurrencyMask(product.price ?? 0),
-                    ),
-                    Text('Dimensão: ${product.dimension ?? ''}'),
-                  ],
-                ),
-                Wrap(
-                  children: [
-                    //Container(child: ),
-                  ],
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.product.id ?? '',
+                        style: theme.textTheme.caption.copyWith(fontSize: 14),
+                      ),
+                      Text(
+                        widget.product.name ?? '',
+                        style: theme.textTheme.headline5.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'Quantidade: ${widget.product.quantity?.toString() ?? ''}',
+                        style: theme.textTheme.headline6.copyWith(
+                          fontSize: 16,
+                          color: theme.textTheme.bodyText2.color,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Text(
+                        CurrencyUtil.addCurrencyMask(widget.product.price ?? 0),
+                        style: theme.textTheme.headline6.copyWith(
+                          fontSize: 16,
+                          color: theme.textTheme.bodyText2.color,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Text('Dimensão: ${widget.product.dimension ?? ''}'),
+                    ],
+                  ),
+                  Wrap(
+                    children: [
+                      //Container(child: ),
+                    ],
+                  ),
+                ],
+              ),
             ),
             Container(
               padding: EdgeInsets.all(24),
+              margin: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -80,9 +119,20 @@ class _ProductScreenState extends State<ProductScreen> {
                 borderRadius: BorderRadius.circular(24),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Observações'),
-                  Text(product.description ?? ''),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      'Observações',
+                      style: theme.textTheme.headline6.copyWith(
+                        fontSize: 18,
+                        color: theme.textTheme.bodyText2.color,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Text(widget.product.description ?? ''),
                 ],
               ),
             ),

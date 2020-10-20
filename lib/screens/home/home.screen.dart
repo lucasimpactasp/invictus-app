@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/core/widgets/products/recent-products.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
 import 'package:invictus/core/widgets/sales/sales-chart.widget.dart';
@@ -10,6 +12,25 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final productController = Get.put(ProductController());
+
+  bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    init();
+  }
+
+  void init() async {
+    setState(() => loading = true);
+
+    await productController.getMany();
+
+    setState(() => loading = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -22,13 +43,16 @@ class _HomeState extends State<Home> {
         ),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
+      body: RefreshIndicator(
+        onRefresh: () async => init(),
         child: ListView(
           children: [
-            ResponsiveLayout(
-              mobile: MobileHome(width: width),
-              desktop: DesktopHome(width: width),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: ResponsiveLayout(
+                mobile: MobileHome(width: width, loading: loading),
+                desktop: DesktopHome(width: width, loading: loading),
+              ),
             ),
           ],
         ),
@@ -41,9 +65,11 @@ class DesktopHome extends StatelessWidget {
   const DesktopHome({
     Key key,
     @required this.width,
+    this.loading,
   }) : super(key: key);
 
   final double width;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +100,9 @@ class DesktopHome extends StatelessWidget {
                   height: 190,
                 ),
               ),
-              RecentProducts(),
+              RecentProducts(
+                loading: loading,
+              )
             ],
           ),
         ),
@@ -92,9 +120,11 @@ class MobileHome extends StatelessWidget {
   const MobileHome({
     Key key,
     @required this.width,
+    this.loading,
   }) : super(key: key);
 
   final double width;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +153,9 @@ class MobileHome extends StatelessWidget {
             height: 190,
           ),
         ),
-        RecentProducts()
+        RecentProducts(
+          loading: loading,
+        )
       ],
     );
   }

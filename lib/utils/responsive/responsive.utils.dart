@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:invictus/core/models/widgets/responsive/responsive.model.dart';
 
 class ResponsiveUtils {
@@ -18,6 +19,30 @@ class ResponsiveUtils {
       return DeviceScreenType.Desktop;
     } else {
       return DeviceScreenType.Stable;
+    }
+  }
+
+  static T responsiveResponse<T>(
+    Size size, {
+    @required T mobile,
+    @required T desktop,
+    T tabletPortrait,
+    T tabletLandscape,
+    T stable,
+  }) {
+    if (size.width > ResponsiveUtils.stableSize) {
+      return stable ?? desktop;
+    } else if (size.width > ResponsiveUtils.tabletLandscapeSize &&
+        size.width <= ResponsiveUtils.desktopSize) {
+      return desktop;
+    } else if (size.width > ResponsiveUtils.tabletPortraitSize &&
+        size.width <= ResponsiveUtils.tabletLandscapeSize) {
+      return tabletLandscape ?? desktop;
+    } else if (size.width > ResponsiveUtils.mobileSize &&
+        size.width <= ResponsiveUtils.tabletPortraitSize) {
+      return tabletPortrait ?? mobile;
+    } else {
+      return mobile;
     }
   }
 }
