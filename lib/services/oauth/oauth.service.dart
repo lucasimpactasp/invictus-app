@@ -18,14 +18,14 @@ final OAuth oauth = OAuth(
 class OAuthSecureStorage extends OAuthStorage {
   @override
   Future<void> clear() async {
-    await storage.delete(key: 'accessToken');
-    await storage.delete(key: 'refreshToken');
+    await StorageUtils.delete('accessToken');
+    await StorageUtils.delete('refreshToken');
   }
 
   @override
   Future<OAuthToken> fetch() async {
-    final accessToken = await storage.read(key: 'accessToken');
-    final refreshToken = await storage.read(key: 'refreshToken');
+    final accessToken = await StorageUtils.saveOrGet('accessToken');
+    final refreshToken = await StorageUtils.saveOrGet('refreshToken');
 
     if (accessToken == null || refreshToken == null) {
       return null;
@@ -39,8 +39,8 @@ class OAuthSecureStorage extends OAuthStorage {
 
   @override
   Future<OAuthToken> save(OAuthToken token) async {
-    await storage.write(key: 'accessToken', value: token.accessToken);
-    await storage.write(key: 'refreshToken', value: token.refreshToken);
+    await StorageUtils.saveOrGet('accessToken', value: token.accessToken);
+    await StorageUtils.saveOrGet('refreshToken', value: token.refreshToken);
 
     return token;
   }

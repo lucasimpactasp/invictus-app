@@ -26,7 +26,7 @@ class _HomeState extends State<Home> {
   void init() async {
     setState(() => loading = true);
 
-    await productController.getMany();
+    await productController.getMany().catchError((error) => print(error)); 
 
     setState(() => loading = false);
   }

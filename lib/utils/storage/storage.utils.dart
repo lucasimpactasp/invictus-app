@@ -24,4 +24,16 @@ class StorageUtils {
       return FlutterSecureStorage().read(key: key);
     }
   }
+
+  static Future<void> delete(String key) async {
+    if (kIsWeb || Platform.isLinux || Platform.isMacOS || Platform.isWindows) {
+      final LocalStorageInterface localStorage =
+          await LocalStorage.getInstance();
+      await localStorage.clear();
+
+      return;
+    }
+
+    await FlutterSecureStorage().delete(key: key);
+  }
 }

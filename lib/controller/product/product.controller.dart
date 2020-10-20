@@ -15,7 +15,9 @@ class ProductController extends GetxController {
   }
 
   Future<List<Product>> getMany() async {
+    print('antes');
     final List productsRes = await productService.getMany();
+    print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
     final List<Product> productsValue =
         productsRes.map((product) => Product.fromJson(product)).toList();
     products.value = productsValue;
