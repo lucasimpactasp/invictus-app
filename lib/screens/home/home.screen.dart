@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:invictus/controller/product/product.controller.dart';
+import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/products/recent-products.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
 import 'package:invictus/core/widgets/sales/sales-chart.widget.dart';
@@ -26,7 +27,7 @@ class _HomeState extends State<Home> {
   void init() async {
     setState(() => loading = true);
 
-    await productController.getMany().catchError((error) => print(error)); 
+    await productController.getMany().catchError((error) => print(error));
 
     setState(() => loading = false);
   }
@@ -36,13 +37,7 @@ class _HomeState extends State<Home> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.orangeAccent,
-        title: Text(
-          'Invictus App',
-        ),
-        centerTitle: true,
-      ),
+      appBar: InvictusAppBar.getAppBar(),
       body: RefreshIndicator(
         onRefresh: () async => init(),
         child: ListView(
@@ -75,6 +70,10 @@ class DesktopHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
+        RaisedButton(
+          onPressed: () => Get.toNamed('/create-product'),
+          child: Text('Criar Produto'),
+        ),
         Flexible(
           flex: 2,
           child: Column(

@@ -15,8 +15,9 @@ class InvictusApp extends StatelessWidget {
     return GetMaterialApp(
       routes: Routes.getRoutes(),
       initialRoute: '/login',
-      theme: ThemeData(primaryColor: Colors.orangeAccent),
+      theme: ThemeData(primaryColor: Colors.deepOrange[600]),
       navigatorKey: Get.key,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

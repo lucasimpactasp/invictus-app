@@ -1,3 +1,5 @@
+import 'package:invictus/core/models/category/category.model.dart';
+
 class Product {
   String id;
   String createdAt;
@@ -8,6 +10,8 @@ class Product {
   int quantity;
   String dimension;
   String imageUrl;
+  Category category;
+  dynamic createdBy;
 
   Product({
     this.id,
@@ -19,6 +23,8 @@ class Product {
     this.quantity,
     this.dimension,
     this.imageUrl,
+    this.category,
+    this.createdBy
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -31,7 +37,10 @@ class Product {
         price: json['price'],
         quantity: json['quantity'],
         dimension: json['dimension'],
-        imageUrl: json['imageUrl']);
+        imageUrl: json['imageUrl'],
+        category: json['category'] != null ? Category.fromJson(json['category']) : null,
+        createdBy: json['createdBy'],
+        );
   }
 
   Map<String, dynamic> toJson(Product product) {
@@ -44,6 +53,8 @@ class Product {
       'quantity': this.quantity,
       'dimension': this.dimension,
       'imageUrl': this.imageUrl,
+      'category': this.category != null ? this.category.toJson(this.category) : null,
+      'createdBy': {'id': this.createdBy},
     };
   }
 }

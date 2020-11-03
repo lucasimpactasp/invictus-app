@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:invictus/controller/user/user.controller.dart';
 import 'package:invictus/services/oauth/oauth.service.dart';
 import 'package:oauth_dio/oauth_dio.dart';
 
@@ -22,8 +23,14 @@ class _LoginState extends State<Login> {
 
   void init() async {
     setState(() => loading = true);
+    
     final OAuthToken token = await oauth.fetchOrRefreshAccessToken();
+    final UserController userController = Get.put(UserController());
+
+    await userController.getUser();
+
     setState(() => loading = false);
+    
     if (token != null && token.refreshToken != null) {
       Get.offAllNamed('/home');
     }
@@ -55,9 +62,10 @@ class _LoginState extends State<Login> {
                         width: double.infinity,
                         child: RaisedButton(
                           onPressed: () async {
-                            await oAuthService.login(
-                                usernameController.value.text,
-                                passwordController.value.text);
+                            await oAuthService
+                                .login(usernameController.value.text,
+                                    passwordController.value.text)
+                                .catchError((error) => print(error));
 
                             Get.offAllNamed('/home');
                           },

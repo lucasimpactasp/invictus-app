@@ -40,4 +40,16 @@ abstract class BaseService<T> {
 
     return response.data;
   }
+
+  Future postOne(Map<String, dynamic> body) async {
+    final response = await dio
+        .post('/$endpoint', data: body)
+        .catchError((error) => throw (error));
+
+    if (response == null) {
+      throw ('Error to post one from $endpoint');
+    }
+
+    return response.data;
+  }
 }
