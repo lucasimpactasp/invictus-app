@@ -1,6 +1,7 @@
+import 'package:invictus/core/models/base.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 
-class Category {
+class Category extends Model<String> {
   String id;
   String name;
   String slug;
@@ -26,13 +27,12 @@ class Category {
     );
   }
 
-  Map<String, dynamic> toJson(Category product) {
+  Map<String, dynamic> toJson() {
     return {
-      'id': this.id,
       'name': this.name,
       'slug': this.slug,
       'products': this.products != null
-          ? this.products.map((product) => product.toJson(product)).toList()
+          ? this.products.map((product) => product.toJson()).toList()
           : null,
     };
   }

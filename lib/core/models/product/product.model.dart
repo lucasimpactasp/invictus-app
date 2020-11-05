@@ -1,6 +1,8 @@
+import 'package:invictus/core/models/base.model.dart';
 import 'package:invictus/core/models/category/category.model.dart';
+import 'package:invictus/core/models/user/user.model.dart';
 
-class Product {
+class Product extends Model<String> {
   String id;
   String createdAt;
   String updateAt;
@@ -11,7 +13,7 @@ class Product {
   String dimension;
   String imageUrl;
   Category category;
-  dynamic createdBy;
+  User createdBy;
 
   Product({
     this.id,
@@ -24,26 +26,28 @@ class Product {
     this.dimension,
     this.imageUrl,
     this.category,
-    this.createdBy
+    this.createdBy,
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-        id: json['id'],
-        createdAt: json['createdAt'],
-        updateAt: json['updateAt'],
-        name: json['name'],
-        description: json['description'],
-        price: json['price'],
-        quantity: json['quantity'],
-        dimension: json['dimension'],
-        imageUrl: json['imageUrl'],
-        category: json['category'] != null ? Category.fromJson(json['category']) : null,
-        createdBy: json['createdBy'],
-        );
+      id: json['id'],
+      createdAt: json['createdAt'],
+      updateAt: json['updateAt'],
+      name: json['name'],
+      description: json['description'],
+      price: json['price'],
+      quantity: json['quantity'],
+      dimension: json['dimension'],
+      imageUrl: json['imageUrl'],
+      category:
+          json['category'] != null ? Category.fromJson(json['category']) : null,
+      createdBy:
+          json['createdBy'] != null ? User.fromJson(json['createdBy']) : null,
+    );
   }
 
-  Map<String, dynamic> toJson(Product product) {
+  Map<String, dynamic> toJson() {
     return {
       'createdAt': this.createdAt,
       'updateAt': this.updateAt,
@@ -53,8 +57,8 @@ class Product {
       'quantity': this.quantity,
       'dimension': this.dimension,
       'imageUrl': this.imageUrl,
-      'category': this.category != null ? this.category.toJson(this.category) : null,
-      'createdBy': {'id': this.createdBy},
+      'category': this.category != null ? this.category.id : null,
+      'vendor': '',
     };
   }
 }

@@ -28,16 +28,19 @@ class ProductCard extends StatelessWidget {
                   height: 150,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
-                    image: DecorationImage(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(product.imageUrl),
-                    ),
+                    color: theme.primaryColor,
+                    image: product.imageUrl.isNotEmpty
+                        ? DecorationImage(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(product.imageUrl),
+                          )
+                        : null,
                   ),
                 ),
                 Container(
                   width: 150,
                   child: Text(
-                    product.id,
+                    product.id ?? '',
                     style: theme.textTheme.caption,
                     textAlign: TextAlign.center,
                   ),
@@ -62,7 +65,7 @@ class ProductCard extends StatelessWidget {
                   style: theme.textTheme.headline6.copyWith(fontSize: 18),
                 ),
                 Text(
-                  CurrencyUtil.addCurrencyMask(product.price / 100),
+                  CurrencyUtil.addCurrencyMask((product.price ?? 0) / 100),
                   style: theme.textTheme.headline6.copyWith(fontSize: 18),
                 ),
               ],

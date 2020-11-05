@@ -5,7 +5,7 @@ import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/models/widgets/responsive/responsive.model.dart';
 import 'package:invictus/core/widgets/card/products/product.card.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
-import 'package:invictus/screens/product/product.screen.dart';
+import 'package:invictus/screens/products/product.screen.dart';
 import 'package:invictus/services/product/product.service.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
 import 'package:invictus/utils/responsive/responsive.utils.dart';

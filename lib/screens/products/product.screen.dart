@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:invictus/core/models/product/product.model.dart';
+import 'package:invictus/screens/products/product-manager.screen.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
 import 'dart:io' show Platform;
 
@@ -14,9 +15,15 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  Product product;
+
   @override
   void initState() {
     super.initState();
+
+    if (widget.product != null) {
+      setState(() => product = widget.product);
+    }
   }
 
   @override
@@ -25,7 +32,15 @@ class _ProductScreenState extends State<ProductScreen> {
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          final productRoute = await Get.to(
+            ProductManager(
+              product: widget.product,
+            ),
+          );
+
+          setState(() => product = productRoute);
+        },
         backgroundColor: theme.primaryColor,
         child: Icon(
           Icons.edit,
@@ -40,14 +55,17 @@ class _ProductScreenState extends State<ProductScreen> {
               height: 300,
               alignment: Alignment.topLeft,
               padding: EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: NetworkImage(
-                    widget.product.imageUrl,
-                  ),
-                  fit: BoxFit.cover,
-                ),
-              ),
+              decoration: product.imageUrl.isNotEmpty
+                  ? BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          product.imageUrl,
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                      color: theme.primaryColor,
+                    )
+                  : null,
               child: GestureDetector(
                 onTap: () => Get.back(),
                 child: Icon(
@@ -67,17 +85,17 @@ class _ProductScreenState extends State<ProductScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.product.id ?? '',
+                        product.id ?? '',
                         style: theme.textTheme.caption.copyWith(fontSize: 14),
                       ),
                       Text(
-                        widget.product.name ?? '',
+                        product.name ?? '',
                         style: theme.textTheme.headline5.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        'Quantidade: ${widget.product.quantity?.toString() ?? ''}',
+                        'Quantidade: ${product.quantity?.toString() ?? ''}',
                         style: theme.textTheme.headline6.copyWith(
                           fontSize: 16,
                           color: theme.textTheme.bodyText2.color,
@@ -92,7 +110,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           fontWeight: FontWeight.normal,
                         ),
                       ),
-                      Text('Dimensão: ${widget.product.dimension ?? ''}'),
+                      Text('Dimensão: ${product.dimension ?? ''}'),
                     ],
                   ),
                   Wrap(
@@ -132,7 +150,7 @@ class _ProductScreenState extends State<ProductScreen> {
                       ),
                     ),
                   ),
-                  Text(widget.product.description ?? ''),
+                  Text(product.description ?? ''),
                 ],
               ),
             ),

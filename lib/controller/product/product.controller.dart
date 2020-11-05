@@ -7,21 +7,24 @@ class ProductController extends GetxController {
   Rx<Product> activeProduct = Product().obs;
 
   Future<Product> getOne(String id) async {
-    final Product productRes =
-        Product.fromJson(await productService.getOne(id));
+    final Product productRes = await productService.getOne(id);
     activeProduct.value = productRes;
 
     return productRes;
   }
 
   Future<List<Product>> getMany() async {
-    print('antes');
-    final List productsRes = await productService.getMany();
-    
-    final List<Product> productsValue =
-        productsRes.map((product) => Product.fromJson(product)).toList();
-    products.value = productsValue;
+    final List<Product> productsRes = await productService.getMany();
 
-    return productsValue;
+    products.value = productsRes;
+
+    return productsRes;
+  }
+
+  Future<Product> updateOne(String id, Product product) async {
+    final Product productRes =
+        await productService.putOne(id, product.toJson());
+
+    return productRes;
   }
 }

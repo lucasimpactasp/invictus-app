@@ -23,16 +23,22 @@ class _LoginState extends State<Login> {
 
   void init() async {
     setState(() => loading = true);
-    
-    final OAuthToken token = await oauth.fetchOrRefreshAccessToken();
-    final UserController userController = Get.put(UserController());
 
-    await userController.getUser();
+    final OAuthToken token = await oauth.fetchOrRefreshAccessToken();
 
     setState(() => loading = false);
-    
-    if (token != null && token.refreshToken != null) {
-      Get.offAllNamed('/home');
+
+    if (token != null) {
+      final UserController userController = Get.put(UserController());
+      setState(() => loading = true);
+
+      await userController.getUser();
+
+      setState(() => loading = false);
+
+      if (token != null && token.refreshToken != null) {
+        Get.offAllNamed('/home');
+      }
     }
   }
 
@@ -62,10 +68,10 @@ class _LoginState extends State<Login> {
                         width: double.infinity,
                         child: RaisedButton(
                           onPressed: () async {
-                            await oAuthService
-                                .login(usernameController.value.text,
-                                    passwordController.value.text)
-                                .catchError((error) => print(error));
+                            await oAuthService.login(
+                              usernameController.value.text,
+                              passwordController.value.text,
+                            );
 
                             Get.offAllNamed('/home');
                           },

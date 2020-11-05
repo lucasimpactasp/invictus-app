@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
+import 'package:invictus/core/models/user/user.model.dart';
 import 'package:invictus/services/user/user.service.dart';
 
 class UserController extends GetxController {
-  RxMap user = {}.obs;
+  Rx<User> user = User().obs;
 
   @override
   void onInit() {
@@ -12,7 +13,6 @@ class UserController extends GetxController {
   Future getUser() async {
     final userRes = await userService.getOne('me');
     user.value = userRes;
-    print('aaaaaaaaaaaaaaa $userRes');
 
     return userRes;
   }
