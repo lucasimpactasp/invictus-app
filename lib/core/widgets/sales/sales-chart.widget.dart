@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:line_chart/charts/line-chart.widget.dart';
 import 'package:line_chart/model/line-chart.model.dart';
 
@@ -55,6 +56,17 @@ class _SalesChartState extends State<SalesChart> {
             insideCirclePaint: insideCirclePaint,
             insidePadding: 24,
           ),
+          Padding(
+            padding: EdgeInsets.only(top: 24),
+            child: RaisedButton(
+              onPressed: () {
+                Get.toNamed('/invoice-manager');
+              },
+              child: Text(
+                'Cadastrar venda',
+              ),
+            ),
+          )
         ],
       ),
     );

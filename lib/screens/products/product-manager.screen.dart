@@ -49,32 +49,34 @@ class _ProductManagerState extends State<ProductManager> {
   }
 
   void loadForm() {
-    if (widget.product.name.isNotEmpty) {
-      nameController.text = widget.product.name;
-    }
+    if (widget.product != null) {
+      if (widget.product.name.isNotEmpty) {
+        nameController.text = widget.product.name;
+      }
 
-    if (widget.product.description.isNotEmpty) {
-      descriptionController.text = widget.product.description;
-    }
+      if (widget.product.description.isNotEmpty) {
+        descriptionController.text = widget.product.description;
+      }
 
-    if (widget.product.price != null) {
-      priceController.text = widget.product.price.toString();
-    }
+      if (widget.product.price != null) {
+        priceController.text = widget.product.price.toString();
+      }
 
-    if (widget.product.quantity != null) {
-      quantityController.text = widget.product.quantity.toString();
-    }
+      if (widget.product.quantity != null) {
+        quantityController.text = widget.product.quantity.toString();
+      }
 
-    if (widget.product.dimension.isNotEmpty) {
-      dimensionController.text = widget.product.dimension;
-    }
+      if (widget.product.dimension.isNotEmpty) {
+        dimensionController.text = widget.product.dimension;
+      }
 
-    if (widget.product.imageUrl.isNotEmpty) {
-      imageController.text = widget.product.imageUrl;
-    }
+      if (widget.product.imageUrl.isNotEmpty) {
+        imageController.text = widget.product.imageUrl;
+      }
 
-    if (widget.product.category != null) {
-      setState(() => selectedItem = widget.product.category);
+      if (widget.product.category != null) {
+        setState(() => selectedItem = widget.product.category);
+      }
     }
   }
 

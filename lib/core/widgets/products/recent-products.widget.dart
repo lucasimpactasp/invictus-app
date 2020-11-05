@@ -101,7 +101,9 @@ class _RecentProductsState extends State<RecentProducts> {
                     borderRadius: BorderRadius.circular(100),
                   ),
                   child: RaisedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Get.toNamed('/products');
+                    },
                     padding: EdgeInsets.zero,
                     elevation: 0,
                     color: Colors.transparent,
