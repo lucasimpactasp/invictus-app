@@ -49,8 +49,6 @@ class Product extends Model<String> {
 
   Map<String, dynamic> toJson() {
     return {
-      'createdAt': this.createdAt,
-      'updateAt': this.updateAt,
       'name': this.name,
       'description': this.description,
       'price': this.price,

@@ -14,7 +14,11 @@ class ProductController extends GetxController {
   }
 
   Future<List<Product>> getMany() async {
-    final List<Product> productsRes = await productService.getMany();
+    final List<Product> productsRes = await productService.getMany(
+      params: {
+        'join': 'category',
+      },
+    );
 
     products.value = productsRes;
 

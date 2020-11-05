@@ -53,7 +53,7 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Móvel',
+                  product?.category?.name ?? '-----',
                   style: theme.textTheme.caption.copyWith(fontSize: 18),
                 ),
                 Text(

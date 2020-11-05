@@ -65,10 +65,11 @@ class _RecentProductsState extends State<RecentProducts> {
                     children: products
                         .sublist(0, products.length > 3 ? 3 : products.length)
                         .map((product) {
-                      return Padding(
+                      return Container(
                         padding: products.last != product
                             ? const EdgeInsets.only(bottom: 24)
                             : EdgeInsets.zero,
+                        width: double.infinity,
                         child: RecentProductCard(
                           products: products,
                           theme: theme,
@@ -89,6 +90,29 @@ class _RecentProductsState extends State<RecentProducts> {
                     }).toList(),
                   ),
                 ),
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border.all(
+                      color: theme.primaryColor,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  child: RaisedButton(
+                    onPressed: () {},
+                    padding: EdgeInsets.zero,
+                    elevation: 0,
+                    color: Colors.transparent,
+                    child: Text(
+                      'Ver todos',
+                      style: theme.textTheme.bodyText2.copyWith(
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                  ),
+                )
               } else ...{
                 Text('Não há produtos cadastrados')
               }
@@ -145,39 +169,57 @@ class RecentProductCardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final BoxDecoration boxDecoration = BoxDecoration(
+      color: Colors.white,
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(.5),
+          blurRadius: 8,
+          offset: Offset.zero,
+          spreadRadius: .3,
+        ),
+      ],
+      borderRadius: BorderRadius.circular(24),
+    );
     return GestureDetector(
       onTap: () => Get.to(
         ProductScreen(
           product: product,
         ),
       ),
-      child: Container(
-        padding: EdgeInsets.all(12),
-        margin: products.last == product
-            ? EdgeInsets.zero
-            : EdgeInsets.only(right: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(.5),
-              blurRadius: 8,
-              offset: Offset.zero,
-              spreadRadius: .3,
-            ),
-          ],
-          borderRadius: BorderRadius.circular(24),
+      child: ResponsiveLayout(
+        mobile: Container(
+          padding: EdgeInsets.all(12),
+          decoration: boxDecoration,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (product.imageUrl != null) ...{
+                ProductCard(
+                  theme: theme,
+                  product: product,
+                ),
+              },
+            ],
+          ),
         ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (product.imageUrl != null) ...{
-              ProductCard(
-                theme: theme,
-                product: product,
-              ),
-            },
-          ],
+        desktop: Container(
+          padding: EdgeInsets.all(12),
+          margin: products.last == product
+              ? EdgeInsets.zero
+              : EdgeInsets.only(bottom: 12),
+          decoration: boxDecoration,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (product.imageUrl != null) ...{
+                ProductCard(
+                  theme: theme,
+                  product: product,
+                ),
+              },
+            ],
+          ),
         ),
       ),
     );
