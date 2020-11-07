@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:invictus/controller/payment/invoice.controller.dart';
+import 'package:invictus/core/models/invoice/invoice.model.dart';
+import 'package:invictus/utils/currency/currency.utils.dart';
 import 'package:line_chart/charts/line-chart.widget.dart';
 import 'package:line_chart/model/line-chart.model.dart';
 
@@ -19,17 +22,38 @@ class SalesChart extends StatefulWidget {
 }
 
 class _SalesChartState extends State<SalesChart> {
-  final Paint linePaint = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 3
-    ..color = Colors.orangeAccent;
-
-  final Paint circlePaint = Paint()..color = Colors.orangeAccent;
-
   final Paint insideCirclePaint = Paint()..color = Colors.white;
+
+  final InvoiceController invoiceController = Get.put(InvoiceController());
+
+  double actualValue;
+
+  String getTotal(List<Invoice> invoices) {
+    double total = 0;
+
+    if (invoices != null) {
+      total = invoices.fold(
+        0,
+        (previousValue, element) {
+          return previousValue + element.total / 100;
+        },
+      );
+    }
+
+    return CurrencyUtil.addCurrencyMask(total);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final List<Invoice> invoices = invoiceController.invoices;
+
+    final Paint linePaint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3
+      ..color = theme.primaryColor;
+    final Paint circlePaint = Paint()..color = theme.primaryColor;
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -46,27 +70,116 @@ class _SalesChartState extends State<SalesChart> {
       ),
       child: Column(
         children: [
-          LineChart(
-            linePaint: linePaint,
-            width: widget.width,
-            height: widget.height,
-            data: widget.data,
-            showCircles: true,
-            circlePaint: circlePaint,
-            insideCirclePaint: insideCirclePaint,
-            insidePadding: 24,
-          ),
           Padding(
-            padding: EdgeInsets.only(top: 24),
+            padding: EdgeInsets.all(24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Vendas',
+                  style: theme.textTheme.headline5,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Total: ${invoices != null ? invoices.length : 0}',
+                      style: theme.textTheme.bodyText2,
+                    ),
+                    Text(
+                      actualValue != null
+                          ? 'Preço: ${CurrencyUtil.addCurrencyMask(actualValue / 100)}'
+                          : 'Preço total: ${this.getTotal(invoices)}',
+                      style: theme.textTheme.bodyText2,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          if (widget.data.length > 0) ...{
+            LineChart(
+              linePaint: linePaint,
+              width: widget.width,
+              height: widget.height,
+              data: widget.data,
+              showCircles: true,
+              circlePaint: circlePaint,
+              insideCirclePaint: insideCirclePaint,
+              insidePadding: 24,
+              showPointer: true,
+              linePointerDecoration: BoxDecoration(
+                color: theme.primaryColor,
+              ),
+              pointerDecoration: BoxDecoration(
+                color: theme.primaryColor,
+                shape: BoxShape.circle,
+              ),
+              onDropPointer: () {
+                setState(() => actualValue = null);
+              },
+              onValuePointer: (LineChartModelCallback value) {
+                setState(() => actualValue = value.chart.amount);
+              },
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(
+                top: 24,
+                left: 24,
+                right: 24,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(
+                  color: theme.primaryColor,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: RaisedButton(
+                onPressed: () {
+                  Get.toNamed('/invoice-manager');
+                },
+                padding: EdgeInsets.zero,
+                elevation: 0,
+                color: Colors.transparent,
+                child: Text(
+                  'Ver todas',
+                  style: theme.textTheme.bodyText2.copyWith(
+                    color: theme.primaryColor,
+                  ),
+                ),
+              ),
+            ),
+          },
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.transparent,
+              border: Border.all(
+                color: theme.primaryColor,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(100),
+            ),
             child: RaisedButton(
               onPressed: () {
                 Get.toNamed('/invoice-manager');
               },
+              padding: EdgeInsets.zero,
+              elevation: 0,
+              color: Colors.transparent,
               child: Text(
                 'Cadastrar venda',
+                style: theme.textTheme.bodyText2.copyWith(
+                  color: theme.primaryColor,
+                ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

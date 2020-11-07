@@ -9,6 +9,7 @@ class Installment extends Model<String> {
   DateTime paymentDate;
   String paymentStatus;
   Invoice invoice;
+  DateTime expirationDate;
 
   Installment({
     this.id,
@@ -18,13 +19,19 @@ class Installment extends Model<String> {
     this.paymentDate,
     this.paymentStatus,
     this.invoice,
+    this.expirationDate,
   });
 
   factory Installment.fromJson(Map<String, dynamic> json) {
     DateTime paymentDate;
+    DateTime expirationDate;
 
     if (json['paymentDate'] != null) {
       paymentDate = DateTime.parse(json['paymentDate']);
+    }
+
+    if (json['expirationDate'] != null) {
+      expirationDate = DateTime.parse(json['expirationDate']);
     }
 
     return Installment(
@@ -34,16 +41,25 @@ class Installment extends Model<String> {
       title: json['title'],
       paymentDate: paymentDate,
       paymentStatus: json['paymentStatus'],
-      invoice:
-          json['invoice'] != null ? Invoice.fromJson(json['invoice']) : null,
+      invoice: json['invoice'] != null
+          ? Invoice.fromJson(
+              json['invoice'],
+            )
+          : null,
+      expirationDate: expirationDate,
     );
   }
 
   Map<String, dynamic> toJson() {
     String paymentDate;
+    String expirationDate;
 
     if (this.paymentDate != null) {
       paymentDate = this.paymentDate.toIso8601String();
+    }
+
+    if (this.expirationDate != null) {
+      expirationDate = this.expirationDate.toIso8601String();
     }
 
     return {
@@ -53,6 +69,7 @@ class Installment extends Model<String> {
       'paymentDate': paymentDate,
       'paymentStatus': this.paymentStatus,
       'invoice': this.invoice != null ? this.invoice.toJson() : null,
+      'expirationDate': expirationDate,
     };
   }
 }

@@ -90,35 +90,62 @@ class _RecentProductsState extends State<RecentProducts> {
                     }).toList(),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: RaisedButton(
-                    onPressed: () {
-                      Get.toNamed('/products');
-                    },
-                    padding: EdgeInsets.zero,
-                    elevation: 0,
-                    color: Colors.transparent,
-                    child: Text(
-                      'Ver todos',
-                      style: theme.textTheme.bodyText2.copyWith(
-                        color: theme.primaryColor,
-                      ),
-                    ),
-                  ),
-                )
               } else ...{
                 Text('Não há produtos cadastrados')
               }
-            }
+            },
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: 24),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(
+                  color: theme.primaryColor,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: RaisedButton(
+                onPressed: () {
+                  Get.toNamed('/products');
+                },
+                padding: EdgeInsets.zero,
+                elevation: 0,
+                color: Colors.transparent,
+                child: Text(
+                  'Ver todos',
+                  style: theme.textTheme.bodyText2.copyWith(
+                    color: theme.primaryColor,
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: 24),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(
+                  color: theme.primaryColor,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(100),
+              ),
+              child: RaisedButton(
+                onPressed: () {
+                  Get.toNamed('/product-manager');
+                },
+                padding: EdgeInsets.zero,
+                elevation: 0,
+                color: Colors.transparent,
+                child: Text(
+                  'Cadastrar produto',
+                  style: theme.textTheme.bodyText2.copyWith(
+                    color: theme.primaryColor,
+                  ),
+                ),
+              ),
+            ),
           },
         ],
       ),

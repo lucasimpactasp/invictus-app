@@ -29,18 +29,21 @@ class Invoice extends Model<String> {
       discount: json['discount'],
       installments: json['installments'] != null
           ? json['installments']
-              .map((installment) => Installment.fromJson(installment))
+              .map<Installment>(
+                  (installment) => Installment.fromJson(installment))
               .toList()
           : null,
       sellers: json['sellers'] != null
-          ? json['sellers'].map((seller) => User.fromJson(seller)).toList()
+          ? json['sellers']
+              .map<User>((seller) => User.fromJson(seller))
+              .toList()
           : null,
       buyers: json['buyers'] != null
-          ? json['buyers'].map((buyer) => User.fromJson(buyer)).toList()
+          ? json['buyers'].map<User>((buyer) => User.fromJson(buyer)).toList()
           : null,
       products: json['products'] != null
           ? json['products']
-              .map((product) => Product.fromJson(product))
+              .map<Product>((product) => Product.fromJson(product))
               .toList()
           : null,
     );
@@ -65,6 +68,31 @@ class Invoice extends Model<String> {
       'products': this.products != null
           ? this.products.map((product) => product.toJson()).toList()
           : null,
+    };
+  }
+}
+
+class CreateInvoice extends Model<String> {
+  int discount;
+  List<Installment> installments;
+  List<String> products;
+
+  CreateInvoice({
+    this.discount,
+    this.products,
+    this.installments,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'discount': this.discount,
+      'installments': this.installments != null
+          ? this
+              .installments
+              .map((installment) => installment.toJson())
+              .toList()
+          : null,
+      'products': this.products,
     };
   }
 }

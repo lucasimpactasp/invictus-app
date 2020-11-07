@@ -14,11 +14,15 @@ class ProductController extends GetxController {
   }
 
   Future<List<Product>> getMany() async {
-    final List<Product> productsRes = await productService.getMany(
-      params: {
-        'join': 'category',
-      },
-    );
+    final List<Product> productsRes = await productService.getProducts();
+
+    products.value = productsRes;
+
+    return productsRes;
+  }
+
+  Future<List<Product>> searchProducts(String term) async {
+    final List<Product> productsRes = await productService.searchProducts(term);
 
     products.value = productsRes;
 
@@ -30,5 +34,11 @@ class ProductController extends GetxController {
         await productService.putOne(id, product.toJson());
 
     return productRes;
+  }
+
+  Future<Product> createProduct(Product body) async {
+    final Product product = await productService.postOne(body.toJson());
+
+    return product;
   }
 }

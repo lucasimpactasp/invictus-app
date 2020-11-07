@@ -6,6 +6,20 @@ class _UserService extends BaseService<User> {
 
   _UserService({this.endpoint = 'users'}) : super(endpoint);
 
+  Future<User> getBestSeller() async {
+    final response = await this
+        .get('/$endpoint/bestSeller')
+        .catchError((error) => throw (error));
+
+    if (response == null) {
+      throw ('Error to get the best seller from $endpoint');
+    }
+
+    final res = response.data;
+
+    return fromJson(res);
+  }
+
   @override
   User fromJson(Map<String, dynamic> json) {
     return User.fromJson(json);

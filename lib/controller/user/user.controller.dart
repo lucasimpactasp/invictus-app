@@ -16,4 +16,25 @@ class UserController extends GetxController {
 
     return userRes;
   }
+
+  Future getBestSeller() async {
+    final userRes = await userService.getBestSeller();
+    user.value = userRes;
+
+    return userRes;
+  }
+
+  Future<User> createUser(UserParams body) async {
+    final user = await userService.postOne(body.toJson());
+    this.user.value = user;
+
+    return user;
+  }
+
+  Future<User> updateUser(String id, UserParams body) async {
+    final user = await userService.putOne(id, body.toJson());
+    this.user.value = user;
+
+    return user;
+  }
 }

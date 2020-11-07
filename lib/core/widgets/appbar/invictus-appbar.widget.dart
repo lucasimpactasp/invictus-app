@@ -17,7 +17,6 @@ class InvictusAppBar {
             padding: const EdgeInsets.only(right: 24),
             child: Text(
               'Sair',
-              style: TextStyle(color: Colors.black),
             ),
           ),
         ),

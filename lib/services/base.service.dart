@@ -6,7 +6,7 @@ import 'package:invictus/services/oauth/oauth.service.dart';
 import 'package:oauth_dio/oauth_dio.dart';
 
 abstract class BaseService<T extends Model> {
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = 'http://10.0.2.2:3000';
 
   String endpoint;
   static Dio _dio;
@@ -25,8 +25,44 @@ abstract class BaseService<T extends Model> {
     _dio.interceptors.add(LoggerInterceptor());
   }
 
+  Future<Response<T>> get<T>(
+    String path, {
+    Map<String, dynamic> queryParameters,
+    Options options,
+    CancelToken cancelToken,
+    ProgressCallback onReceiveProgress,
+  }) async {
+    return await _dio.get(
+      path,
+      queryParameters: queryParameters,
+      cancelToken: cancelToken,
+      onReceiveProgress: onReceiveProgress,
+      options: options,
+    );
+  }
+
+  Future<Response<T>> post<T>(
+    String path, {
+    data,
+    Map<String, dynamic> queryParameters,
+    Options options,
+    CancelToken cancelToken,
+    ProgressCallback onSendProgress,
+    ProgressCallback onReceiveProgress,
+  }) async {
+    return await _dio.post(
+      path,
+      data: data,
+      queryParameters: queryParameters,
+      options: options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+  }
+
   Future<T> getOne(String id, {Map<String, dynamic> params}) async {
-    final response = await _dio
+    final response = await this
         .get('/$endpoint/$id', queryParameters: params)
         .catchError((error) => throw (error));
 

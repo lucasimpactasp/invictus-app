@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:invictus/controller/payment/invoice.controller.dart';
 import 'package:invictus/controller/product/product.controller.dart';
+import 'package:invictus/controller/user/user.controller.dart';
+import 'package:invictus/core/models/invoice/invoice.model.dart';
+import 'package:invictus/core/models/user/user.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/products/recent-products.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
 import 'package:invictus/core/widgets/sales/sales-chart.widget.dart';
+import 'package:invictus/core/widgets/user/best-seller.widget.dart';
+import 'package:invictus/screens/vendor/vendor.screen.dart';
 import 'package:line_chart/model/line-chart.model.dart';
 
 class Home extends StatefulWidget {
@@ -14,6 +20,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final productController = Get.put(ProductController());
+  final userController = Get.put(UserController());
+  final invoiceController = Get.put(InvoiceController());
+
+  User user;
+  List<LineChartModel> itemsOfChart = [];
 
   bool loading = false;
 
@@ -27,9 +38,22 @@ class _HomeState extends State<Home> {
   void init() async {
     setState(() => loading = true);
 
-    await productController.getMany().catchError((error) => print(error));
+    await productController.getMany();
+    final userRes = await userController.getBestSeller();
+    setState(() => user = userRes);
+    final List<Invoice> invoices = await invoiceController.getInvoices();
+    this.generateChartData(invoices);
 
     setState(() => loading = false);
+  }
+
+  void generateChartData(List<Invoice> invoices) {
+    this.itemsOfChart = invoices
+        .map((invoice) => LineChartModel(
+              amount: invoice.total.toDouble(),
+              date: DateTime.now(),
+            ))
+        .toList();
   }
 
   @override
@@ -38,6 +62,49 @@ class _HomeState extends State<Home> {
 
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            SafeArea(
+              child: ListTile(
+                title: Text('Cadastrar venda'),
+                onTap: () {
+                  Get.toNamed('/invoice-manager');
+                },
+              ),
+            ),
+            ListTile(
+              title: Text('Cadastrar Produto'),
+              onTap: () {
+                Get.toNamed('/product-manager');
+              },
+            ),
+            ListTile(
+              title: Text('Cadastrar Categoria'),
+              onTap: () {
+                Get.toNamed('/category-manager');
+              },
+            ),
+            ListTile(
+              title: Text('Cadastrar Fornecedor'),
+              onTap: () {
+                Get.to(
+                  VendorScreen(
+                    products: productController.products,
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              title: Text('Cadastrar Usuário'),
+              onTap: () {
+                Get.toNamed('/user-manager');
+              },
+            ),
+          ],
+        ),
+      ),
       body: RefreshIndicator(
         onRefresh: () async => init(),
         child: ListView(
@@ -45,8 +112,17 @@ class _HomeState extends State<Home> {
             Padding(
               padding: const EdgeInsets.all(24),
               child: ResponsiveLayout(
-                mobile: MobileHome(width: width, loading: loading),
-                desktop: DesktopHome(width: width, loading: loading),
+                mobile: MobileHome(
+                  width: width,
+                  loading: loading,
+                  itemsOfChart: itemsOfChart,
+                  user: user,
+                ),
+                desktop: DesktopHome(
+                  width: width,
+                  loading: loading,
+                  itemsOfChart: itemsOfChart,
+                ),
               ),
             ),
           ],
@@ -61,17 +137,19 @@ class DesktopHome extends StatelessWidget {
     Key key,
     @required this.width,
     this.loading,
+    this.itemsOfChart,
   }) : super(key: key);
 
   final double width;
   final bool loading;
+  final List<LineChartModel> itemsOfChart;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         RaisedButton(
-          onPressed: () => Get.toNamed('/create-product'),
+          onPressed: () => Get.toNamed('/product-manager'),
           child: Text('Criar Produto'),
         ),
         Flexible(
@@ -81,20 +159,7 @@ class DesktopHome extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 24),
                 child: SalesChart(
-                  data: [
-                    LineChartModel(amount: 5000),
-                    LineChartModel(amount: 6000),
-                    LineChartModel(amount: 7000),
-                    LineChartModel(amount: 1000),
-                    LineChartModel(amount: 3500),
-                    LineChartModel(amount: 2500),
-                    LineChartModel(amount: 3000),
-                    LineChartModel(amount: 8000),
-                    LineChartModel(amount: 2000),
-                    LineChartModel(amount: 1000),
-                    LineChartModel(amount: 1500),
-                    LineChartModel(amount: 4500),
-                  ],
+                  data: this.itemsOfChart,
                   width: width * 0.65 - 48,
                   height: 190,
                 ),
@@ -120,10 +185,14 @@ class MobileHome extends StatelessWidget {
     Key key,
     @required this.width,
     this.loading,
+    this.itemsOfChart,
+    this.user,
   }) : super(key: key);
 
   final double width;
   final bool loading;
+  final User user;
+  final List<LineChartModel> itemsOfChart;
 
   @override
   Widget build(BuildContext context) {
@@ -134,27 +203,17 @@ class MobileHome extends StatelessWidget {
             bottom: 24,
           ),
           child: SalesChart(
-            data: [
-              LineChartModel(amount: 5000),
-              LineChartModel(amount: 6000),
-              LineChartModel(amount: 7000),
-              LineChartModel(amount: 1000),
-              LineChartModel(amount: 3500),
-              LineChartModel(amount: 2500),
-              LineChartModel(amount: 3000),
-              LineChartModel(amount: 8000),
-              LineChartModel(amount: 2000),
-              LineChartModel(amount: 1000),
-              LineChartModel(amount: 1500),
-              LineChartModel(amount: 4500),
-            ],
+            data: this.itemsOfChart,
             width: width - 56,
             height: 190,
           ),
         ),
         RecentProducts(
           loading: loading,
-        )
+        ),
+        BestSeller(
+          user: user,
+        ),
       ],
     );
   }

@@ -40,7 +40,7 @@ class ProductCard extends StatelessWidget {
                 Container(
                   width: 150,
                   child: Text(
-                    product.id ?? '',
+                    '#${product.id?.substring(0, 8) ?? ''}',
                     style: theme.textTheme.caption,
                     textAlign: TextAlign.center,
                   ),
@@ -60,9 +60,23 @@ class ProductCard extends StatelessWidget {
                   product.name ?? '',
                   style: theme.textTheme.headline6,
                 ),
-                Text(
-                  'Quantidade: ${product.quantity.toString()}',
-                  style: theme.textTheme.headline6.copyWith(fontSize: 18),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Quantidade: ',
+                        style: theme.textTheme.headline6.copyWith(
+                          fontSize: 18,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${product.quantity.toString()}',
+                        style: theme.textTheme.headline6.copyWith(fontSize: 18),
+                      ),
+                    ],
+                  ),
                 ),
                 Text(
                   CurrencyUtil.addCurrencyMask((product.price ?? 0) / 100),

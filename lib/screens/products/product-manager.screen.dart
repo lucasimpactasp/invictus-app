@@ -1,5 +1,5 @@
-import 'package:easy_mask/easy_mask.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:get/get.dart';
 import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/controller/user/user.controller.dart';
@@ -7,8 +7,8 @@ import 'package:invictus/core/models/category/category.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/services/category/category.service.dart';
-import 'package:invictus/services/product/product.service.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
+import 'package:invictus/utils/currency/currency.utils.dart';
 import 'package:menu_button/menu_button.dart';
 
 class ProductManager extends StatefulWidget {
@@ -25,7 +25,8 @@ class _ProductManagerState extends State<ProductManager> {
   List<Category> items = [];
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  TextEditingController priceController = TextEditingController();
+  MoneyMaskedTextController priceController =
+      MoneyMaskedTextController(leftSymbol: 'R\$ ');
   TextEditingController quantityController = TextEditingController();
   TextEditingController dimensionController = TextEditingController();
   TextEditingController imageController = TextEditingController();
@@ -172,14 +173,6 @@ class _ProductManagerState extends State<ProductManager> {
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: 'Preço'),
-                  inputFormatters: [
-                    TextInputMask(
-                      mask: 'R\$! !9+.999,99',
-                      placeholder: '0',
-                      maxPlaceHolders: 3,
-                      reverse: true,
-                    ),
-                  ],
                   controller: priceController,
                 ),
                 TextField(
@@ -202,13 +195,8 @@ class _ProductManagerState extends State<ProductManager> {
                     int quantity = 0;
 
                     if (priceController.text.isNotEmpty) {
-                      String textPrice = priceController.text
-                          .replaceAll('\$', '')
-                          .replaceAll(' ', '')
-                          .replaceAll('.', '')
-                          .replaceAll(',', '');
-
-                      price = int.parse(textPrice);
+                      price =
+                          CurrencyUtil.cleanCurrencyMask(priceController.text);
                     }
 
                     if (quantityController.text.isNotEmpty) {
@@ -222,7 +210,7 @@ class _ProductManagerState extends State<ProductManager> {
                       quantity: quantity,
                       dimension: dimensionController.text,
                       imageUrl: imageController.text,
-                      category: selectedItem,
+                      category: selectedItem ?? Category(id: ''),
                     );
 
                     final ProductController productController = Get.put(
@@ -230,7 +218,9 @@ class _ProductManagerState extends State<ProductManager> {
                     );
 
                     if (widget.product == null) {
-                      await productService.postOne(product.toJson());
+                      await productController.createProduct(product);
+                      await productController.getMany();
+
                       BannerUtils.showBanner(
                         'Feito!',
                         'Produto criado com sucesso.',
@@ -245,9 +235,9 @@ class _ProductManagerState extends State<ProductManager> {
                         'Feito!',
                         'Produto alterado com sucesso.',
                       );
-
-                      Get.offAllNamed('/home');
                     }
+
+                    Get.offAllNamed('/home');
                   },
                   child: Text(widget.product != null ? 'Atualizar' : 'Salvar'),
                 ),

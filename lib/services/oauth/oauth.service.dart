@@ -9,7 +9,7 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:oauth_dio/oauth_dio.dart';
 
 final OAuth oauth = OAuth(
-  tokenUrl: 'http://localhost:3000/oauth/token',
+  tokenUrl: 'http://10.0.2.2:3000/oauth/token',
   clientId: '433535ea-a184-4bd2-9f51-4570441bfb07',
   clientSecret: 'invictus',
   storage: OAuthSecureStorage(),
