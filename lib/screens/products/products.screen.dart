@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/card/products/product.card.widget.dart';
+import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/screens/products/product-manager.screen.dart';
 import 'package:invictus/utils/debounce/debounce.util.dart';
 
@@ -51,25 +52,22 @@ class _ProductsScreenState extends State<ProductsScreen> {
                   ),
                   Expanded(
                     flex: 2,
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
-                        labelText: 'Digite o nome do produto',
-                        icon: Icon(
+                    child: SizedBox(
+                      height: 50,
+                      child: Input(
+                        controller: searchController,
+                        labelText: 'Digite o nome da venda',
+                        rounded: true,
+                        prefixIcon: Icon(
                           Icons.search,
-                          color: Colors.grey[200],
+                          color: theme.primaryColor,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(40),
-                          borderSide:
-                              BorderSide(color: Colors.grey[200], width: 1),
-                        ),
+                        onChanged: (String term) {
+                          debounce.run(() async {
+                            return await productController.searchProducts(term);
+                          }).onCancel(() {});
+                        },
                       ),
-                      onChanged: (String term) {
-                        debounce.run(() async {
-                          return await productController.searchProducts(term);
-                        }).onCancel(() {});
-                      },
                     ),
                   ),
                 ],
@@ -92,17 +90,37 @@ class _ProductsScreenState extends State<ProductsScreen> {
                                 );
                               },
                               child: Container(
-                                color: Colors.transparent,
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(.5),
+                                      blurRadius: 8,
+                                      offset: Offset.zero,
+                                      spreadRadius: .3,
+                                    ),
+                                  ],
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
                                 margin:
                                     productController.products.last == product
-                                        ? EdgeInsets.zero
-                                        : EdgeInsets.symmetric(vertical: 24),
+                                        ? EdgeInsets.symmetric(
+                                            horizontal: 24,
+                                          )
+                                        : EdgeInsets.symmetric(
+                                            vertical: 24,
+                                            horizontal: 24,
+                                          ),
                                 child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    ProductCard(
-                                      theme: theme,
-                                      product: product,
-                                    ),
+                                    if (product.imageUrl != null) ...{
+                                      ProductCard(
+                                        theme: theme,
+                                        product: product,
+                                      ),
+                                    },
                                   ],
                                 ),
                               ),

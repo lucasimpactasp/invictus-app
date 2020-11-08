@@ -25,7 +25,7 @@ class ProductCard extends StatelessWidget {
                 Container(
                   margin: EdgeInsets.only(right: 12, bottom: 6),
                   width: 150,
-                  height: 150,
+                  height: 130,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(24),
                     color: theme.primaryColor,

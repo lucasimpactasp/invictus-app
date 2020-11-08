@@ -95,6 +95,8 @@ class _RecentProductsState extends State<RecentProducts> {
                   ),
                 ),
                 InvictusButton(
+                  backgroundColor: theme.primaryColor,
+                  textColor: Colors.white,
                   onPressed: () {
                     Get.toNamed('/products');
                   },
@@ -105,6 +107,8 @@ class _RecentProductsState extends State<RecentProducts> {
               }
             },
             InvictusButton(
+              backgroundColor: theme.primaryColor,
+              textColor: Colors.white,
               onPressed: () {
                 Get.toNamed('/product-manager');
               },

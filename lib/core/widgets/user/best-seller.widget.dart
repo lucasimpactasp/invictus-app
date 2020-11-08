@@ -63,6 +63,8 @@ class _BestSellerState extends State<BestSeller> {
             ),
             Text('Total de vendas: ${widget.user.madeInvoices.length}'),
             InvictusButton(
+              backgroundColor: theme.primaryColor,
+              textColor: Colors.white,
               onPressed: () {
                 Get.to(
                   UserManagerScreen(
@@ -76,6 +78,8 @@ class _BestSellerState extends State<BestSeller> {
             Text('Não há nenhum vendedor.')
           },
           InvictusButton(
+            backgroundColor: theme.primaryColor,
+            textColor: Colors.white,
             onPressed: () {
               Get.toNamed('/invoice-manager');
             },

@@ -6,6 +6,7 @@ import 'package:invictus/core/models/category/category.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/button/button.widget.dart';
+import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/screens/home/home.screen.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
@@ -58,55 +59,60 @@ class _CategoryManagerScreenState extends State<CategoryManagerScreen> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: InvictusAppBar.getAppBar(),
-        body: ListView(
-          children: [
-            Form(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
-                      labelText: 'Nome da categoria',
-                    ),
-                  ),
-                  if (products != null && products.length > 0) ...{
-                    Obx(
-                      () => MultiSelectFormField(
-                        autovalidate: false,
-                        chipBackGroundColor: Colors.red,
-                        chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-                        dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                        checkBoxActiveColor: Colors.red,
-                        checkBoxCheckColor: Colors.green,
-                        dialogShapeBorder: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12.0))),
-                        title: Text(
-                          "Produtos",
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        dataSource:
-                            products.map((e) => e.toJson(addId: true)).toList(),
-                        textField: 'name',
-                        valueField: 'id',
-                        okButtonLabel: 'Adicionar',
-                        cancelButtonLabel: 'Cancelar',
-                        hintWidget: Text('Clique para selecionar'),
-                        initialValue: this.products,
-                        onSaved: (value) {
-                          if (value == null) return;
-                          setState(() {
-                            this.products =
-                                value.map<String>((v) => v.toString()).toList();
-                          });
-                        },
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ListView(
+            children: [
+              Form(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Input(
+                        controller: nameController,
+                        labelText: 'Nome da categoria',
                       ),
                     ),
-                  },
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.all(24),
-                    child: InvictusButton(
+                    if (products != null && products.length > 0) ...{
+                      Obx(
+                        () => MultiSelectFormField(
+                          autovalidate: false,
+                          chipBackGroundColor: theme.primaryColor,
+                          chipLabelStyle:
+                              TextStyle(fontWeight: FontWeight.bold),
+                          dialogTextStyle:
+                              TextStyle(fontWeight: FontWeight.bold),
+                          checkBoxActiveColor: theme.primaryColor,
+                          checkBoxCheckColor: Colors.white,
+                          fillColor: Colors.white,
+                          border: InputBorder.none,
+                          title: Text(
+                            'Produtos da categoria',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          dataSource: products
+                              .map((e) => e.toJson(addId: true))
+                              .toList(),
+                          textField: 'name',
+                          valueField: 'id',
+                          okButtonLabel: 'Adicionar',
+                          cancelButtonLabel: 'Cancelar',
+                          hintWidget: Text('Clique para selecionar'),
+                          initialValue: this.products,
+                          onSaved: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              this.products = value
+                                  .map<String>((v) => v.toString())
+                                  .toList();
+                            });
+                          },
+                        ),
+                      ),
+                    },
+                    InvictusButton(
+                      backgroundColor: theme.primaryColor,
+                      textColor: Colors.white,
                       onPressed: () async {
                         final CategoryParams category = CategoryParams(
                           name: nameController.text,
@@ -120,8 +126,6 @@ class _CategoryManagerScreenState extends State<CategoryManagerScreen> {
                             widget.category.id,
                             category,
                           );
-
-                          print('askdjasld');
                         }
                         await productController.getMany();
                         Get.offAll(Home());
@@ -136,11 +140,11 @@ class _CategoryManagerScreenState extends State<CategoryManagerScreen> {
                       },
                       title: widget.category != null ? 'Atualizar' : 'Salvar',
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 class InvictusButton extends StatelessWidget {
   final Function onPressed;
   final String title;
+  final Color backgroundColor;
+  final Color textColor;
 
   InvictusButton({
     @required this.onPressed,
     this.title,
+    this.textColor,
+    this.backgroundColor,
   });
 
   @override
@@ -17,7 +21,7 @@ class InvictusButton extends StatelessWidget {
       width: double.infinity,
       margin: EdgeInsets.only(top: 24),
       decoration: BoxDecoration(
-        color: Colors.transparent,
+        color: this.backgroundColor ?? Colors.transparent,
         border: Border.all(
           color: theme.primaryColor,
           width: 1,
@@ -27,12 +31,18 @@ class InvictusButton extends StatelessWidget {
       child: RaisedButton(
         onPressed: this.onPressed,
         padding: EdgeInsets.zero,
+        hoverColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        hoverElevation: 0,
+        focusElevation: 0,
+        highlightElevation: 0,
         elevation: 0,
         color: Colors.transparent,
         child: Text(
           this.title,
           style: theme.textTheme.bodyText2.copyWith(
-            color: theme.primaryColor,
+            color: this.textColor ?? theme.primaryColor,
           ),
         ),
       ),

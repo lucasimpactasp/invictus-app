@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:invictus/core/models/invoice/installment.model.dart';
 import 'package:invictus/core/models/invoice/invoice.model.dart';
+import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
 import 'package:invictus/utils/dates/dates.util.dart';
@@ -225,7 +226,7 @@ class _PaymentParcelState extends State<PaymentParcel> {
     // Botão personalizado
     final Widget installmentsButton = Container(
       width: widget.width,
-      height: 43,
+      height: 55,
       alignment: Alignment.center,
       child: Padding(
         padding: EdgeInsets.only(left: 16, right: 11),
@@ -246,7 +247,7 @@ class _PaymentParcelState extends State<PaymentParcel> {
                 style: TextStyle(
                     color:
                         selectedItem == 0 ? Colors.grey[400] : Colors.grey[600],
-                    fontSize: selectedItem == 0 ? 12 : 14),
+                    fontSize: selectedItem == 0 ? 14 : 16),
               ),
             ),
             FittedBox(
@@ -268,6 +269,7 @@ class _PaymentParcelState extends State<PaymentParcel> {
     return Form(
       key: widget.formKey,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             margin: EdgeInsets.only(bottom: 12),
@@ -276,62 +278,13 @@ class _PaymentParcelState extends State<PaymentParcel> {
                 Expanded(
                   child: Padding(
                     padding: EdgeInsets.only(
-                      top: 12,
                       right: 6,
                     ),
-                    child: TextField(
+                    child: Input(
                       controller: widget.valueController,
                       focusNode: valueFocus,
-                      decoration: InputDecoration(
-                        labelText: 'Valor da venda',
-                      ),
+                      labelText: 'Valor da venda',
                       keyboardType: TextInputType.number,
-                      textAlign: TextAlign.start,
-                      style: TextStyle(
-                        fontSize: paymentFontSize,
-                        color: paymentColor,
-                      ),
-                      onSubmitted: (val) => setState(() => available = true),
-                      onChanged: (String text) {
-                        setState(() {
-                          paymentColor = Colors.grey[600];
-                          paymentFontSize = 14;
-                          ignoring = false;
-                        });
-
-                        final int textValue =
-                            CurrencyUtil.cleanCurrencyMask(text);
-                        if (text.isNotEmpty && textValue > 100) {
-                          setState(() => loading = true);
-
-                          Future.delayed(Duration(milliseconds: 300), () {
-                            if (selectedItem != null) {
-                              for (var i = 0; i < selectedItem; i++) {
-                                if (parcels.asMap().containsKey(i)) {
-                                  parcels[i].price = textValue ~/ selectedItem;
-                                }
-                              }
-
-                              int total = 0;
-                              parcels.forEach((value) {
-                                total += value.price;
-                              });
-
-                              if (total < textValue) {
-                                final count = textValue - total;
-                                if (parcels.asMap().containsKey(0)) {
-                                  setState(() => parcels[0].price += count);
-                                }
-                              }
-
-                              setState(() => loading = false);
-                            }
-                          });
-                          if (widget.onUpdateTotalValue != null) {
-                            widget.onUpdateTotalValue(text);
-                          }
-                        }
-                      },
                     ),
                   ),
                 ),
@@ -345,8 +298,8 @@ class _PaymentParcelState extends State<PaymentParcel> {
                           ? Text(
                               'Prestações',
                               style: theme.textTheme.bodyText2.copyWith(
-                                fontSize: 10,
-                                color: Colors.grey[400],
+                                fontSize: 12,
+                                color: Colors.grey[600],
                               ),
                             )
                           : null,
@@ -463,14 +416,14 @@ class _PaymentParcelState extends State<PaymentParcel> {
                   children: <Widget>[
                     Container(),
                     Padding(
-                      padding: EdgeInsets.only(left: 24, right: 18),
+                      padding: EdgeInsets.only(right: 18),
                       child: Text(
                         'Valor',
                         textAlign: TextAlign.center,
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(right: 30),
+                      padding: EdgeInsets.only(right: 50),
                       child: Text(
                         'Vencimento',
                         textAlign: TextAlign.center,
@@ -519,13 +472,9 @@ class _PaymentParcelState extends State<PaymentParcel> {
                               ),
                               Expanded(
                                 child: Center(
-                                  child: TextField(
+                                  child: Input(
                                     controller: controller,
                                     keyboardType: TextInputType.number,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.grey[600],
-                                    ),
                                     onChanged: (val) {
                                       final int parcelValue =
                                           CurrencyUtil.cleanCurrencyMask(val);
@@ -549,15 +498,10 @@ class _PaymentParcelState extends State<PaymentParcel> {
                                   child: Container(
                                     color: Colors.transparent,
                                     padding: EdgeInsets.only(left: 6),
-                                    child: TextField(
+                                    child: Input(
                                       enabled: false,
                                       controller: dateMaskController,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.grey[600],
-                                      ),
                                       keyboardType: TextInputType.number,
-                                      textAlign: TextAlign.start,
                                     ),
                                   ),
                                 ),

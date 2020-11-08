@@ -5,6 +5,8 @@ import 'package:invictus/controller/user/user.controller.dart';
 import 'package:invictus/controller/vendor/vendor.controller.dart';
 import 'package:invictus/core/models/user/user.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
+import 'package:invictus/core/widgets/button/button.widget.dart';
+import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/screens/home/home.screen.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:menu_button/menu_button.dart';
@@ -65,7 +67,7 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final Widget button = SizedBox(
-      width: MediaQuery.of(context).size.width / 2 - 24,
+      width: double.infinity,
       height: 40,
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 11),
@@ -98,108 +100,107 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: InvictusAppBar.getAppBar(),
-        body: ListView(
-          children: [
-            Form(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
+        body: Padding(
+          padding: const EdgeInsets.all(24),
+          child: ListView(
+            children: [
+              Form(
+                child: Column(
+                  children: [
+                    Input(
+                      controller: nameController,
                       labelText: 'Primeiro Nome',
                     ),
-                  ),
-                  TextField(
-                    controller: lastNameController,
-                    decoration: InputDecoration(
-                      labelText: 'Sobrenome',
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                      ),
+                      child: Input(
+                        controller: lastNameController,
+                        labelText: 'Sobrenome',
+                      ),
                     ),
-                  ),
-                  TextField(
-                    controller: usernameController,
-                    decoration: InputDecoration(
+                    Input(
+                      controller: usernameController,
                       labelText: 'username',
                     ),
-                  ),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        top: 12,
+                        bottom: 6,
+                      ),
+                      child: Input(
+                        controller: emailController,
+                        labelText: 'Email',
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  MenuButton(
-                    child: button, // Widget displayed as the button
-                    items: items, // List of your items
-                    topDivider: true,
-                    scrollPhysics:
-                        AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
-                    itemBuilder: (value) => Container(
-                      width: MediaQuery.of(context).size.width / 2 - 24,
-                      height: 40,
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(value),
-                    ), // Widget displayed for each item
-                    toggledChild: Container(
-                      color: Colors.white,
-                      child: button, // Widget displayed as the button,
+                    MenuButton(
+                      child: button, // Widget displayed as the button
+                      items: items, // List of your items
+                      topDivider: true,
+                      label: Text('Cargo'),
+                      scrollPhysics:
+                          AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
+                      itemBuilder: (value) => Container(
+                        width: MediaQuery.of(context).size.width / 2 - 24,
+                        height: 40,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(value),
+                      ), // Widget displayed for each item
+                      toggledChild: Container(
+                        color: Colors.white,
+                        child: button, // Widget displayed as the button,
+                      ),
+                      divider: Container(
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                      onItemSelected: (value) {
+                        selectedItem = value;
+                        // Action when new item is selected
+                      },
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey[300]),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(3.0)),
+                          color: Colors.white),
+                      onMenuButtonToggle: (isToggle) {
+                        print(isToggle);
+                      },
                     ),
-                    divider: Container(
-                      height: 1,
-                      color: Colors.grey,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        new Radio(
+                          value: 'M',
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                          activeColor: theme.primaryColor,
+                        ),
+                        new Text('Homem'),
+                        new Radio(
+                          value: 'F',
+                          groupValue: _radioValue,
+                          onChanged: _handleRadioValueChange,
+                          activeColor: theme.primaryColor,
+                        ),
+                        new Text('Mulher'),
+                      ],
                     ),
-                    onItemSelected: (value) {
-                      selectedItem = value;
-                      // Action when new item is selected
+                    if (widget.user == null) ...{
+                      TextFormField(
+                        controller: passwordController,
+                        decoration: InputDecoration(
+                          labelText: 'Senha',
+                        ),
+                        obscureText: true,
+                      ),
                     },
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(3.0)),
-                        color: Colors.white),
-                    onMenuButtonToggle: (isToggle) {
-                      print(isToggle);
-                    },
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      new Radio(
-                        value: 'M',
-                        groupValue: _radioValue,
-                        onChanged: _handleRadioValueChange,
-                      ),
-                      new Text('Homem'),
-                      new Radio(
-                        value: 'F',
-                        groupValue: _radioValue,
-                        onChanged: _handleRadioValueChange,
-                      ),
-                      new Text('Mulher'),
-                    ],
-                  ),
-                  if (widget.user == null) ...{
-                    TextFormField(
-                      controller: passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Senha',
-                      ),
-                      obscureText: true,
-                    ),
-                  },
-                  Container(
-                    width: double.infinity,
-                    margin: EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(
-                        color: theme.primaryColor,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: RaisedButton(
+                    InvictusButton(
+                      backgroundColor: theme.primaryColor,
+                      textColor: Colors.white,
                       onPressed: () async {
                         String text = 'Usuário criado com sucesso!';
 
@@ -232,23 +233,15 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
 
                         BannerUtils.showBanner('Feito!', text);
                       },
-                      padding: EdgeInsets.zero,
-                      elevation: 0,
-                      color: Colors.transparent,
-                      child: Text(
-                        widget.user != null
-                            ? 'Editar usuário'
-                            : 'Cadastrar usuário',
-                        style: theme.textTheme.bodyText2.copyWith(
-                          color: theme.primaryColor,
-                        ),
-                      ),
+                      title: widget.user != null
+                          ? 'Editar usuário'
+                          : 'Cadastrar usuário',
                     ),
-                  ),
-                ],
-              ),
-            )
-          ],
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

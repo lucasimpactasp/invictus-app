@@ -132,6 +132,8 @@ class _SalesChartState extends State<SalesChart> {
                 right: 24,
               ),
               child: InvictusButton(
+                backgroundColor: theme.primaryColor,
+                textColor: Colors.white,
                 onPressed: () {
                   Get.toNamed('/invoices');
                 },
@@ -146,6 +148,8 @@ class _SalesChartState extends State<SalesChart> {
               right: 24,
             ),
             child: InvictusButton(
+              backgroundColor: theme.primaryColor,
+              textColor: Colors.white,
               onPressed: () {
                 Get.toNamed('/invoice-manager');
               },

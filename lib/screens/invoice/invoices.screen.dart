@@ -5,6 +5,7 @@ import 'package:invictus/controller/payment/invoice.controller.dart';
 import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/card/products/product.card.widget.dart';
+import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/screens/invoice/invoice-manager.screen.dart';
 import 'package:invictus/screens/products/product-manager.screen.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
@@ -54,27 +55,24 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                     ),
                   ),
                   Expanded(
-                    flex: 3,
-                    child: TextField(
-                      controller: searchController,
-                      decoration: InputDecoration(
+                    flex: 2,
+                    child: SizedBox(
+                      height: 50,
+                      child: Input(
+                        controller: searchController,
                         labelText: 'Digite o nome da venda',
-                        icon: Icon(
+                        rounded: true,
+                        prefixIcon: Icon(
                           Icons.search,
-                          color: Colors.grey[200],
+                          color: theme.primaryColor,
                         ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(40),
-                          borderSide:
-                              BorderSide(color: Colors.grey[200], width: 1),
-                        ),
+                        onChanged: (String term) {
+                          debounce.run(() async {
+                            return await invoiceController
+                                .searchInvoicesByTitle(term);
+                          }).onCancel(() {});
+                        },
                       ),
-                      onChanged: (String term) {
-                        debounce.run(() async {
-                          return await invoiceController
-                              .searchInvoicesByTitle(term);
-                        }).onCancel(() {});
-                      },
                     ),
                   ),
                 ],
@@ -97,11 +95,23 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                 );
                               },
                               child: Container(
-                                color: Colors.transparent,
                                 margin:
                                     invoiceController.invoices.last == invoice
                                         ? EdgeInsets.symmetric(horizontal: 24)
                                         : EdgeInsets.all(24),
+                                padding: EdgeInsets.all(24),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(.5),
+                                      blurRadius: 8,
+                                      offset: Offset.zero,
+                                      spreadRadius: .3,
+                                    ),
+                                  ],
+                                  borderRadius: BorderRadius.circular(24),
+                                ),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

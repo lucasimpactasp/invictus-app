@@ -9,6 +9,7 @@ import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/models/vendor/vendor.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/button/button.widget.dart';
+import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/services/category/category.service.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
@@ -101,7 +102,7 @@ class _ProductManagerState extends State<ProductManager> {
     final ThemeData theme = Theme.of(context);
 
     final Widget button = SizedBox(
-      width: 200,
+      width: double.infinity,
       height: 40,
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 11),
@@ -132,7 +133,7 @@ class _ProductManagerState extends State<ProductManager> {
     );
 
     final Widget vendorButton = SizedBox(
-      width: 200,
+      width: double.infinity,
       height: 40,
       child: Padding(
         padding: const EdgeInsets.only(left: 16, right: 11),
@@ -164,182 +165,180 @@ class _ProductManagerState extends State<ProductManager> {
 
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
-      body: ListView(
-        children: [
-          Text(
-            'Criação de Produto',
-            style: theme.textTheme.headline5,
-          ),
-          Form(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (this.items.length > 0) ...{
-                  Text('Categoria'),
-                  MenuButton(
-                    child: button, // Widget displayed as the button
-                    items: items, // List of your items
-                    topDivider: true,
-                    popupHeight:
-                        200, // This popupHeight is optional. The default height is the size of items
-                    scrollPhysics:
-                        AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
-                    itemBuilder: (value) => Container(
-                      width: 200,
-                      height: 40,
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(value.name),
-                    ), // Widget displayed for each item
-                    toggledChild: Container(
-                      color: Colors.white,
-                      child: button, // Widget displayed as the button,
+      body: Padding(
+        padding: const EdgeInsets.all(24),
+        child: ListView(
+          children: [
+            Form(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (this.items.length > 0) ...{
+                    MenuButton(
+                      child: button,
+                      items: items,
+                      topDivider: true,
+                      label: Text('Categoria'),
+                      scrollPhysics: AlwaysScrollableScrollPhysics(),
+                      itemBuilder: (value) => Container(
+                        width: 200,
+                        height: 40,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(value.name),
+                      ),
+                      toggledChild: Container(
+                        color: Colors.white,
+                        child: button,
+                      ),
+                      divider: Container(
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                      onItemSelected: (value) {
+                        setState(() {
+                          selectedItem = value;
+                        });
+                        // Action when new item is selected
+                      },
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(3.0)),
+                          color: Colors.white),
+                      onMenuButtonToggle: (isToggle) {},
                     ),
-                    divider: Container(
-                      height: 1,
-                      color: Colors.grey,
-                    ),
-                    onItemSelected: (value) {
-                      setState(() {
-                        selectedItem = value;
-                      });
-                      // Action when new item is selected
-                    },
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(3.0)),
-                        color: Colors.white),
-                    onMenuButtonToggle: (isToggle) {},
-                  ),
-                } else ...{
-                  Text('Não há nenhuma categoria cadastrada'),
-                },
-                if (this.vendors.length > 0) ...{
-                  Text('Fornecedor'),
-                  // Vendors
-                  MenuButton(
-                    child: vendorButton, // Widget displayed as the button
-                    items: vendors, // List of your items
-                    topDivider: true,
-                    popupHeight:
-                        200, // This popupHeight is optional. The default height is the size of items
-                    scrollPhysics:
-                        AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
-                    itemBuilder: (value) => Container(
-                      width: 200,
-                      height: 40,
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(value.name),
-                    ), // Widget displayed for each item
-                    toggledChild: Container(
-                      color: Colors.white,
-                      child: vendorButton, // Widget displayed as the button,
-                    ),
-                    divider: Container(
-                      height: 1,
-                      color: Colors.grey,
-                    ),
-                    onItemSelected: (value) {
-                      setState(() {
-                        this.selectedVendor = value;
-                      });
-                      // Action when new item is selected
-                    },
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey[300]),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(3.0)),
-                        color: Colors.white),
-                    onMenuButtonToggle: (isToggle) {},
-                  ),
-                } else ...{
-                  Text('Não há nenhum fornecedor cadastrado'),
-                },
-                TextField(
-                  decoration: InputDecoration(labelText: 'Nome'),
-                  controller: nameController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Descrição'),
-                  controller: descriptionController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Preço'),
-                  controller: priceController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Quantidade'),
-                  controller: quantityController,
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Dimensão'),
-                  controller: dimensionController,
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Imagem',
-                  ), // TODO Trocar para outro modo (botão pra anexar imagem)
-                  controller: imageController,
-                ),
-                InvictusButton(
-                  onPressed: () async {
-                    int price = 0;
-                    int quantity = 0;
-
-                    if (priceController.text.isNotEmpty) {
-                      price =
-                          CurrencyUtil.cleanCurrencyMask(priceController.text);
-                    }
-
-                    if (quantityController.text.isNotEmpty) {
-                      quantity = int.parse(quantityController.text);
-                    }
-
-                    final Product product = Product(
-                      name: nameController.text,
-                      description: descriptionController.text,
-                      price: price,
-                      quantity: quantity,
-                      dimension: dimensionController.text,
-                      imageUrl: imageController.text,
-                      category: selectedItem ?? Category(id: ''),
-                      vendor: selectedVendor ?? Vendor(id: ''),
-                    );
-
-                    final ProductController productController = Get.put(
-                      ProductController(),
-                    );
-
-                    if (widget.product == null) {
-                      await productController.createProduct(product);
-                      await productController.getMany();
-
-                      BannerUtils.showBanner(
-                        'Feito!',
-                        'Produto criado com sucesso.',
-                      );
-                    } else {
-                      await productController.updateOne(
-                        widget.product.id,
-                        product,
-                      );
-                      await productController.getMany();
-                      BannerUtils.showBanner(
-                        'Feito!',
-                        'Produto alterado com sucesso.',
-                      );
-                    }
-
-                    Get.offAllNamed('/home');
+                  } else ...{
+                    Text('Não há nenhuma categoria cadastrada'),
                   },
-                  title: widget.product != null ? 'Atualizar' : 'Salvar',
-                ),
-              ],
+                  if (this.vendors.length > 0) ...{
+                    MenuButton(
+                      child: vendorButton, // Widget displayed as the button
+                      items: vendors, // List of your items
+                      label: Text('Fornecedor'),
+                      topDivider: true,
+                      scrollPhysics:
+                          AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
+                      itemBuilder: (value) => Container(
+                        width: 200,
+                        height: 40,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(value.name),
+                      ), // Widget displayed for each item
+                      toggledChild: Container(
+                        color: Colors.white,
+                        child: vendorButton, // Widget displayed as the button,
+                      ),
+                      divider: Container(
+                        height: 1,
+                        color: Colors.grey,
+                      ),
+                      onItemSelected: (value) {
+                        setState(() {
+                          this.selectedVendor = value;
+                        });
+                        // Action when new item is selected
+                      },
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(3.0)),
+                          color: Colors.white),
+                      onMenuButtonToggle: (isToggle) {},
+                    ),
+                  } else ...{
+                    Text('Não há nenhum fornecedor cadastrado'),
+                  },
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Input(
+                      controller: nameController,
+                      labelText: 'Nome',
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Input(
+                      controller: priceController,
+                      labelText: 'Preço',
+                    ),
+                  ),
+                  Input(
+                    controller: quantityController,
+                    labelText: 'Quantidade',
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Input(
+                      controller: dimensionController,
+                      labelText: 'Dimensão',
+                    ),
+                  ),
+                  Input(
+                    controller: imageController,
+                    labelText: 'URL Da imagem',
+                  ),
+                  InvictusButton(
+                    backgroundColor: theme.primaryColor,
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      int price = 0;
+                      int quantity = 0;
+
+                      if (priceController.text.isNotEmpty) {
+                        price = CurrencyUtil.cleanCurrencyMask(
+                            priceController.text);
+                      }
+
+                      if (quantityController.text.isNotEmpty) {
+                        quantity = int.parse(quantityController.text);
+                      }
+
+                      final Product product = Product(
+                        name: nameController.text,
+                        description: descriptionController.text,
+                        price: price,
+                        quantity: quantity,
+                        dimension: dimensionController.text,
+                        imageUrl: imageController.text,
+                        category: selectedItem ?? Category(id: ''),
+                        vendor: selectedVendor ?? Vendor(id: ''),
+                      );
+
+                      final ProductController productController = Get.put(
+                        ProductController(),
+                      );
+
+                      if (widget.product == null) {
+                        await productController.createProduct(product);
+                        await productController.getMany();
+
+                        BannerUtils.showBanner(
+                          'Feito!',
+                          'Produto criado com sucesso.',
+                        );
+                      } else {
+                        await productController.updateOne(
+                          widget.product.id,
+                          product,
+                        );
+                        await productController.getMany();
+                        BannerUtils.showBanner(
+                          'Feito!',
+                          'Produto alterado com sucesso.',
+                        );
+                      }
+
+                      Get.offAllNamed('/home');
+                    },
+                    title: widget.product != null ? 'Atualizar' : 'Salvar',
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
