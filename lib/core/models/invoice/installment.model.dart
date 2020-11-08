@@ -50,7 +50,7 @@ class Installment extends Model<String> {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({bool addId = false}) {
     String paymentDate;
     String expirationDate;
 
@@ -62,7 +62,7 @@ class Installment extends Model<String> {
       expirationDate = this.expirationDate.toIso8601String();
     }
 
-    return {
+    Map<String, dynamic> res = {
       'paymentMethod': this.paymentMethod,
       'price': this.price,
       'title': this.title,
@@ -71,5 +71,11 @@ class Installment extends Model<String> {
       'invoice': this.invoice != null ? this.invoice.toJson() : null,
       'expirationDate': expirationDate,
     };
+
+    if (addId) {
+      res['id'] = this.id;
+    }
+
+    return res;
   }
 }

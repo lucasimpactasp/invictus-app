@@ -8,6 +8,7 @@ import 'package:invictus/core/models/invoice/installment.model.dart';
 import 'package:invictus/core/models/invoice/invoice.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
+import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/core/widgets/payment/payment-parcels.widget.dart';
 import 'package:invictus/screens/home/home.screen.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
@@ -15,6 +16,12 @@ import 'package:invictus/utils/currency/currency.utils.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
 class InvoiceManager extends StatefulWidget {
+  final Invoice invoice;
+
+  InvoiceManager({
+    this.invoice,
+  });
+
   @override
   _InvoiceManagerState createState() => _InvoiceManagerState();
 }
@@ -31,6 +38,33 @@ class _InvoiceManagerState extends State<InvoiceManager> {
 
   List<Installment> installments = [];
   List<String> products = [];
+
+  Invoice invoice;
+  bool showProducts = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.invoice != null) {
+      loadForm();
+    }
+  }
+
+  void loadForm() async {
+    final invoice = await invoiceController.getInvoice(widget.invoice.id);
+
+    this.titleController.text = invoice.title;
+    this.discountController.updateValue(invoice.discount / 100);
+    this.totalController.updateValue(invoice.total / 100);
+
+    setState(() {
+      this.invoice = invoice;
+      this.installments = invoice.installments;
+      this.products = invoice.products.map((e) => e.id).toList();
+      this.showProducts = true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,11 +94,14 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                 ),
                 PaymentParcel(
                   valueController: totalController,
-                  onUpdateParcels: (List<Installment> installments) {
-                    setState(() => this.installments = installments);
+                  invoice: invoice,
+                  onUpdateParcels: (List<Installment> installmentsRes) {
+                    setState(() => installments = installmentsRes);
                   },
                 ),
-                if (products != null && products.length > 0) ...{
+                if (products != null &&
+                    products.length > 0 &&
+                    showProducts) ...{
                   MultiSelectFormField(
                     autovalidate: false,
                     chipBackGroundColor: Colors.red,
@@ -98,15 +135,7 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                 Container(
                   width: double.infinity,
                   margin: EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border.all(
-                      color: theme.primaryColor,
-                      width: 1,
-                    ),
-                    borderRadius: BorderRadius.circular(100),
-                  ),
-                  child: RaisedButton(
+                  child: InvictusButton(
                     onPressed: () async {
                       int discount = 0;
 
@@ -119,31 +148,40 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                         installment.title = titleController.text;
                       });
 
-                      final CreateInvoice invoice = CreateInvoice(
-                        discount: discount,
-                        installments: this.installments,
-                        products: this.products,
-                      );
+                      if (widget.invoice != null) {
+                        print('asdasdas');
+                        final UpdateInvoice invoice = UpdateInvoice(
+                          discount: discount,
+                          title: titleController.text,
+                          installments: this.installments,
+                          products: this.products,
+                        );
 
-                      print(invoice.toJson());
+                        print(invoice.toJson());
 
-                      await invoiceController.createInvoice(invoice);
-                      await invoiceController.getInvoices();
+                        await invoiceController.updateInvoice(
+                          this.invoice.id,
+                          invoice,
+                        );
+                      } else {
+                        final CreateInvoice invoice = CreateInvoice(
+                          discount: discount,
+                          title: titleController.text,
+                          installments: this.installments,
+                          products: this.products,
+                        );
 
-                      Get.offAll(Home());
+                        await invoiceController.createInvoice(invoice);
+                      }
 
-                      BannerUtils.showBanner(
-                          'Feito!', 'Venda gerada com sucesso!');
+                      // await invoiceController.getInvoices();
+
+                      // Get.offAll(Home());
+
+                      // BannerUtils.showBanner(
+                      //     'Feito!', 'Venda gerada com sucesso!');
                     },
-                    padding: EdgeInsets.zero,
-                    elevation: 0,
-                    color: Colors.transparent,
-                    child: Text(
-                      'Cadastrar venda',
-                      style: theme.textTheme.bodyText2.copyWith(
-                        color: theme.primaryColor,
-                      ),
-                    ),
+                    title: 'Salvar',
                   ),
                 ),
               ],

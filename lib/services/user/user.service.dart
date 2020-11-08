@@ -11,8 +11,8 @@ class _UserService extends BaseService<User> {
         .get('/$endpoint/bestSeller')
         .catchError((error) => throw (error));
 
-    if (response == null) {
-      throw ('Error to get the best seller from $endpoint');
+    if (response.data == null || response.data.isEmpty) {
+      return null;
     }
 
     final res = response.data;

@@ -63,7 +63,7 @@ abstract class BaseService<T extends Model> {
 
   Future<T> getOne(String id, {Map<String, dynamic> params}) async {
     final response = await this
-        .get('/$endpoint/$id', queryParameters: params)
+        .get('/$endpoint/$id?join=products', queryParameters: params)
         .catchError((error) => throw (error));
 
     if (response == null) {

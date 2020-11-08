@@ -6,9 +6,9 @@ import 'package:invictus/controller/vendor/vendor.controller.dart';
 import 'package:invictus/core/models/category/category.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/models/vendor/vendor.model.dart';
-import 'package:invictus/screens/category/category.screen.dart';
+import 'package:invictus/screens/category/category-manager.screen.dart';
 import 'package:invictus/screens/products/product-manager.screen.dart';
-import 'package:invictus/screens/vendor/vendor.screen.dart';
+import 'package:invictus/screens/vendor/vendor-manager.screen.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
 import 'dart:io' show Platform;
 
@@ -156,7 +156,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             setState(() => loading = false);
 
                             Get.to(
-                              CategoryScreen(
+                              CategoryManagerScreen(
                                 category: category,
                               ),
                             );
@@ -196,14 +196,12 @@ class _ProductScreenState extends State<ProductScreen> {
                         await productController.getMany();
 
                         final Vendor vendor = await vendorController
-                            .getVendor(widget.product.vendor.id, params: {
-                          'join': 'products',
-                        });
+                            .getVendor(widget.product.vendor.id);
 
                         if (productController.products != null &&
                             productController.products.length > 0) {
                           Get.to(
-                            VendorScreen(
+                            VendorManagerScreen(
                               products: productController.products,
                               vendor: vendor,
                             ),

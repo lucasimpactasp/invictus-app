@@ -3,9 +3,12 @@ import 'package:flutter_masked_text/flutter_masked_text.dart';
 import 'package:get/get.dart';
 import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/controller/user/user.controller.dart';
+import 'package:invictus/controller/vendor/vendor.controller.dart';
 import 'package:invictus/core/models/category/category.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
+import 'package:invictus/core/models/vendor/vendor.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
+import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/services/category/category.service.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
@@ -22,7 +25,9 @@ class ProductManager extends StatefulWidget {
 
 class _ProductManagerState extends State<ProductManager> {
   Category selectedItem;
+  Vendor selectedVendor;
   List<Category> items = [];
+  List<Vendor> vendors = [];
   TextEditingController nameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   MoneyMaskedTextController priceController =
@@ -41,10 +46,20 @@ class _ProductManagerState extends State<ProductManager> {
   }
 
   void init() async {
+    final VendorController vendorController = Get.put(VendorController());
+
     final List<Category> categoriesRes = await categoryService.getMany();
+    final List<Vendor> vendors = await vendorController.getVendors();
+
     if (categoriesRes != null && categoriesRes.length > 0) {
       setState(() {
         items = categoriesRes;
+      });
+    }
+
+    if (vendors != null && vendors.length > 0) {
+      setState(() {
+        this.vendors = vendors;
       });
     }
   }
@@ -116,6 +131,37 @@ class _ProductManagerState extends State<ProductManager> {
       ),
     );
 
+    final Widget vendorButton = SizedBox(
+      width: 200,
+      height: 40,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 11),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Flexible(
+              child: Text(
+                selectedVendor?.name ?? '',
+                style: TextStyle(color: Colors.black),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(
+              width: 12,
+              height: 17,
+              child: FittedBox(
+                fit: BoxFit.fill,
+                child: Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
       body: ListView(
@@ -126,43 +172,91 @@ class _ProductManagerState extends State<ProductManager> {
           ),
           Form(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MenuButton(
-                  child: button, // Widget displayed as the button
-                  items: items, // List of your items
-                  topDivider: true,
-                  popupHeight:
-                      200, // This popupHeight is optional. The default height is the size of items
-                  scrollPhysics:
-                      AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
-                  itemBuilder: (value) => Container(
-                    width: 200,
-                    height: 40,
-                    alignment: Alignment.centerLeft,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(value.name),
-                  ), // Widget displayed for each item
-                  toggledChild: Container(
-                    color: Colors.white,
-                    child: button, // Widget displayed as the button,
+                if (this.items.length > 0) ...{
+                  Text('Categoria'),
+                  MenuButton(
+                    child: button, // Widget displayed as the button
+                    items: items, // List of your items
+                    topDivider: true,
+                    popupHeight:
+                        200, // This popupHeight is optional. The default height is the size of items
+                    scrollPhysics:
+                        AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
+                    itemBuilder: (value) => Container(
+                      width: 200,
+                      height: 40,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(value.name),
+                    ), // Widget displayed for each item
+                    toggledChild: Container(
+                      color: Colors.white,
+                      child: button, // Widget displayed as the button,
+                    ),
+                    divider: Container(
+                      height: 1,
+                      color: Colors.grey,
+                    ),
+                    onItemSelected: (value) {
+                      setState(() {
+                        selectedItem = value;
+                      });
+                      // Action when new item is selected
+                    },
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(3.0)),
+                        color: Colors.white),
+                    onMenuButtonToggle: (isToggle) {},
                   ),
-                  divider: Container(
-                    height: 1,
-                    color: Colors.grey,
+                } else ...{
+                  Text('Não há nenhuma categoria cadastrada'),
+                },
+                if (this.vendors.length > 0) ...{
+                  Text('Fornecedor'),
+                  // Vendors
+                  MenuButton(
+                    child: vendorButton, // Widget displayed as the button
+                    items: vendors, // List of your items
+                    topDivider: true,
+                    popupHeight:
+                        200, // This popupHeight is optional. The default height is the size of items
+                    scrollPhysics:
+                        AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
+                    itemBuilder: (value) => Container(
+                      width: 200,
+                      height: 40,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(value.name),
+                    ), // Widget displayed for each item
+                    toggledChild: Container(
+                      color: Colors.white,
+                      child: vendorButton, // Widget displayed as the button,
+                    ),
+                    divider: Container(
+                      height: 1,
+                      color: Colors.grey,
+                    ),
+                    onItemSelected: (value) {
+                      setState(() {
+                        this.selectedVendor = value;
+                      });
+                      // Action when new item is selected
+                    },
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey[300]),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(3.0)),
+                        color: Colors.white),
+                    onMenuButtonToggle: (isToggle) {},
                   ),
-                  onItemSelected: (value) {
-                    setState(() {
-                      selectedItem = value;
-                    });
-                    // Action when new item is selected
-                  },
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey[300]),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(3.0)),
-                      color: Colors.white),
-                  onMenuButtonToggle: (isToggle) {},
-                ),
+                } else ...{
+                  Text('Não há nenhum fornecedor cadastrado'),
+                },
                 TextField(
                   decoration: InputDecoration(labelText: 'Nome'),
                   controller: nameController,
@@ -189,7 +283,7 @@ class _ProductManagerState extends State<ProductManager> {
                   ), // TODO Trocar para outro modo (botão pra anexar imagem)
                   controller: imageController,
                 ),
-                RaisedButton(
+                InvictusButton(
                   onPressed: () async {
                     int price = 0;
                     int quantity = 0;
@@ -211,6 +305,7 @@ class _ProductManagerState extends State<ProductManager> {
                       dimension: dimensionController.text,
                       imageUrl: imageController.text,
                       category: selectedItem ?? Category(id: ''),
+                      vendor: selectedVendor ?? Vendor(id: ''),
                     );
 
                     final ProductController productController = Get.put(
@@ -239,7 +334,7 @@ class _ProductManagerState extends State<ProductManager> {
 
                     Get.offAllNamed('/home');
                   },
-                  child: Text(widget.product != null ? 'Atualizar' : 'Salvar'),
+                  title: widget.product != null ? 'Atualizar' : 'Salvar',
                 ),
               ],
             ),

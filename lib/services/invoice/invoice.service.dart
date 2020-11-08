@@ -6,6 +6,23 @@ class _InvoiceService extends BaseService<Invoice> {
 
   _InvoiceService({this.endpoint = 'invoice'}) : super(endpoint);
 
+  Future<List<Invoice>> searchByTitle({Map<String, dynamic> data}) async {
+    final response = await this
+        .post(
+          '/$endpoint/search',
+          data: data,
+        )
+        .catchError((error) => throw (error));
+
+    if (response == null) {
+      throw ('Error to search from $endpoint');
+    }
+
+    final List res = response.data;
+
+    return res.map((e) => fromJson(e)).toList();
+  }
+
   @override
   Invoice fromJson(Map<String, dynamic> json) {
     return Invoice.fromJson(json);

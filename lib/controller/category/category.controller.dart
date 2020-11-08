@@ -13,8 +13,7 @@ class CategoryController extends GetxController {
   }
 
   Future<Category> getCategory(String id) async {
-    final category =
-        await categoryService.getOne(id, params: {'join': 'products'});
+    final category = await categoryService.getOne(id);
     return category;
   }
 

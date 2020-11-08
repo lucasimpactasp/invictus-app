@@ -19,4 +19,32 @@ class InvoiceController extends GetxController {
 
     return invoice;
   }
+
+  Future<Invoice> updateInvoice(String id, UpdateInvoice body) async {
+    final Invoice invoice = await invoiceService.putOne(id, body.toJson());
+    this.invoice.value = invoice;
+
+    return invoice;
+  }
+
+  Future<Invoice> getInvoice(String id, {Map<String, dynamic> params}) async {
+    final Invoice invoice = await invoiceService.getOne(
+      id,
+      params: params,
+    );
+    this.invoice.value = invoice;
+
+    return invoice;
+  }
+
+  Future<List<Invoice>> searchInvoicesByTitle(String term) async {
+    final List<Invoice> invoices = await invoiceService.searchByTitle(
+      data: {
+        'title': term,
+      },
+    );
+    this.invoices.value = invoices;
+
+    return invoices;
+  }
 }

@@ -7,6 +7,7 @@ class Invoice extends Model<String> {
   String id;
   int total;
   int discount;
+  String title;
   List<Installment> installments;
   List<User> sellers;
   List<User> buyers;
@@ -18,6 +19,7 @@ class Invoice extends Model<String> {
     this.discount,
     this.installments,
     this.sellers,
+    this.title,
     this.buyers,
     this.products,
   });
@@ -27,6 +29,7 @@ class Invoice extends Model<String> {
       id: json['id'],
       total: json['total'],
       discount: json['discount'],
+      title: json['title'],
       installments: json['installments'] != null
           ? json['installments']
               .map<Installment>(
@@ -53,6 +56,7 @@ class Invoice extends Model<String> {
     return {
       'total': this.total,
       'discount': this.discount,
+      'title': this.title,
       'installments': this.installments != null
           ? this
               .installments
@@ -74,23 +78,51 @@ class Invoice extends Model<String> {
 
 class CreateInvoice extends Model<String> {
   int discount;
+  String title;
   List<Installment> installments;
   List<String> products;
 
   CreateInvoice({
     this.discount,
     this.products,
+    this.title,
     this.installments,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'discount': this.discount,
+      'title': this.title,
       'installments': this.installments != null
           ? this
               .installments
               .map((installment) => installment.toJson())
               .toList()
+          : null,
+      'products': this.products,
+    };
+  }
+}
+
+class UpdateInvoice extends Model<String> {
+  int discount;
+  String title;
+  List<Installment> installments;
+  List<String> products;
+
+  UpdateInvoice({
+    this.discount,
+    this.products,
+    this.title,
+    this.installments,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'discount': this.discount,
+      'title': this.title,
+      'installments': this.installments != null
+          ? this.installments.map((e) => e.toJson(addId: true)).toList()
           : null,
       'products': this.products,
     };

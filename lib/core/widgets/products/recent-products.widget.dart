@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/models/widgets/responsive/responsive.model.dart';
+import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/core/widgets/card/products/product.card.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
 import 'package:invictus/screens/products/product.screen.dart';
@@ -47,12 +48,15 @@ class _RecentProductsState extends State<RecentProducts> {
         borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.only(bottom: 24),
             child: Text(
               'Itens adicionados recentemente',
-              style: theme.textTheme.headline5,
+              style: theme.textTheme.headline5.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           if (widget.loading) ...{
@@ -90,61 +94,21 @@ class _RecentProductsState extends State<RecentProducts> {
                     }).toList(),
                   ),
                 ),
+                InvictusButton(
+                  onPressed: () {
+                    Get.toNamed('/products');
+                  },
+                  title: 'Ver todos',
+                ),
               } else ...{
                 Text('Não há produtos cadastrados')
               }
             },
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(top: 24),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(
-                  color: theme.primaryColor,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: RaisedButton(
-                onPressed: () {
-                  Get.toNamed('/products');
-                },
-                padding: EdgeInsets.zero,
-                elevation: 0,
-                color: Colors.transparent,
-                child: Text(
-                  'Ver todos',
-                  style: theme.textTheme.bodyText2.copyWith(
-                    color: theme.primaryColor,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(top: 24),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(
-                  color: theme.primaryColor,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: RaisedButton(
-                onPressed: () {
-                  Get.toNamed('/product-manager');
-                },
-                padding: EdgeInsets.zero,
-                elevation: 0,
-                color: Colors.transparent,
-                child: Text(
-                  'Cadastrar produto',
-                  style: theme.textTheme.bodyText2.copyWith(
-                    color: theme.primaryColor,
-                  ),
-                ),
-              ),
+            InvictusButton(
+              onPressed: () {
+                Get.toNamed('/product-manager');
+              },
+              title: 'Cadastrar produto',
             ),
           },
         ],

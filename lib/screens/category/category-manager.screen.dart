@@ -5,20 +5,21 @@ import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/core/models/category/category.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
+import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/screens/home/home.screen.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
-class CategoryScreen extends StatefulWidget {
+class CategoryManagerScreen extends StatefulWidget {
   final Category category;
 
-  CategoryScreen({this.category});
+  CategoryManagerScreen({this.category});
 
   @override
-  _CategoryScreenState createState() => _CategoryScreenState();
+  _CategoryManagerScreenState createState() => _CategoryManagerScreenState();
 }
 
-class _CategoryScreenState extends State<CategoryScreen> {
+class _CategoryManagerScreenState extends State<CategoryManagerScreen> {
   final TextEditingController nameController = TextEditingController();
   final ProductController productController = Get.put(ProductController());
   final CategoryController categoryController = Get.put(CategoryController());
@@ -105,15 +106,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   Container(
                     width: double.infinity,
                     margin: EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(
-                        color: theme.primaryColor,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    child: RaisedButton(
+                    child: InvictusButton(
                       onPressed: () async {
                         final CategoryParams category = CategoryParams(
                           name: nameController.text,
@@ -141,17 +134,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                               'Feito!', 'Categoria criada com sucesso!');
                         }
                       },
-                      padding: EdgeInsets.zero,
-                      elevation: 0,
-                      color: Colors.transparent,
-                      child: Text(
-                        widget.category != null
-                            ? 'Editar categoria'
-                            : 'Cadastrar categoria',
-                        style: theme.textTheme.bodyText2.copyWith(
-                          color: theme.primaryColor,
-                        ),
-                      ),
+                      title: widget.category != null ? 'Atualizar' : 'Salvar',
                     ),
                   ),
                 ],

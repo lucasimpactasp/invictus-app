@@ -157,6 +157,33 @@ class _PaymentParcelState extends State<PaymentParcel> {
     }
   }
 
+  @override
+  void didUpdateWidget(covariant PaymentParcel oldWidget) {
+    if (oldWidget.invoice == null) {
+      if (widget.invoice != null) {
+        if (widget.invoice.total != null && widget.invoice.total > 0) {
+          setState(() {
+            paymentColor = Colors.grey[600];
+            ignoring = false;
+            paymentFontSize = 16;
+          });
+        }
+
+        if (widget.invoice.installments != null) {
+          if (widget.invoice.installments.length > 0) {
+            setState(() => selectedItem = widget.invoice.installments.length);
+            widget.invoice.installments.forEach((element) {
+              setState(() => parcels.add(element));
+            });
+          }
+        }
+
+        widget.valueController.text = widget.invoice.total?.toString() ?? '000';
+      }
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   void checkParcels() {
     int total = 0;
     parcels.forEach((value) {
@@ -467,12 +494,12 @@ class _PaymentParcelState extends State<PaymentParcel> {
                             MaskedTextController(mask: '00/00/0000');
 
                         final DateTime date = parcels[value].expirationDate;
-                        final int valParcel = parcels[value].price;
+                        final double valParcel = parcels[value].price / 100;
 
                         final String dateTimeParcel =
                             DateUtils.dateFormatter.format(date);
 
-                        controller.text = valParcel.toString();
+                        controller.updateValue(valParcel);
                         dateMaskController.text = dateTimeParcel;
 
                         return Container(

@@ -10,7 +10,7 @@ import 'package:invictus/core/widgets/products/recent-products.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
 import 'package:invictus/core/widgets/sales/sales-chart.widget.dart';
 import 'package:invictus/core/widgets/user/best-seller.widget.dart';
-import 'package:invictus/screens/vendor/vendor.screen.dart';
+import 'package:invictus/screens/vendor/vendor-manager.screen.dart';
 import 'package:line_chart/model/line-chart.model.dart';
 
 class Home extends StatefulWidget {
@@ -90,7 +90,7 @@ class _HomeState extends State<Home> {
               title: Text('Cadastrar Fornecedor'),
               onTap: () {
                 Get.to(
-                  VendorScreen(
+                  VendorManagerScreen(
                     products: productController.products,
                   ),
                 );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:invictus/controller/payment/invoice.controller.dart';
 import 'package:invictus/core/models/invoice/invoice.model.dart';
+import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
 import 'package:line_chart/charts/line-chart.widget.dart';
 import 'package:line_chart/model/line-chart.model.dart';
@@ -78,7 +79,9 @@ class _SalesChartState extends State<SalesChart> {
               children: [
                 Text(
                   'Vendas',
-                  style: theme.textTheme.headline5,
+                  style: theme.textTheme.headline5.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,62 +127,31 @@ class _SalesChartState extends State<SalesChart> {
               },
             ),
             Container(
-              width: double.infinity,
               margin: EdgeInsets.only(
-                top: 24,
                 left: 24,
                 right: 24,
               ),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(
-                  color: theme.primaryColor,
-                  width: 1,
-                ),
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: RaisedButton(
+              child: InvictusButton(
                 onPressed: () {
-                  Get.toNamed('/invoice-manager');
+                  Get.toNamed('/invoices');
                 },
-                padding: EdgeInsets.zero,
-                elevation: 0,
-                color: Colors.transparent,
-                child: Text(
-                  'Ver todas',
-                  style: theme.textTheme.bodyText2.copyWith(
-                    color: theme.primaryColor,
-                  ),
-                ),
+                title: 'Ver todas',
               ),
-            ),
+            )
           },
           Container(
-            width: double.infinity,
-            margin: EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              border: Border.all(
-                color: theme.primaryColor,
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(100),
+            margin: EdgeInsets.only(
+              bottom: 24,
+              left: 24,
+              right: 24,
             ),
-            child: RaisedButton(
+            child: InvictusButton(
               onPressed: () {
                 Get.toNamed('/invoice-manager');
               },
-              padding: EdgeInsets.zero,
-              elevation: 0,
-              color: Colors.transparent,
-              child: Text(
-                'Cadastrar venda',
-                style: theme.textTheme.bodyText2.copyWith(
-                  color: theme.primaryColor,
-                ),
-              ),
+              title: 'Cadastrar venda',
             ),
-          ),
+          )
         ],
       ),
     );
