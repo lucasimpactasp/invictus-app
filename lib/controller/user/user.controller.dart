@@ -4,6 +4,7 @@ import 'package:invictus/services/user/user.service.dart';
 
 class UserController extends GetxController {
   Rx<User> user = User().obs;
+  RxList<User> users = <User>[].obs;
 
   @override
   void onInit() {
@@ -36,5 +37,17 @@ class UserController extends GetxController {
     this.user.value = user;
 
     return user;
+  }
+
+  Future<List<User>> searchUser(Map<String, dynamic> body) async {
+    final users = await userService.search(body);
+    this.users.value = users;
+    return users;
+  }
+
+  Future<List<User>> getUsers() async {
+    final users = await userService.getMany(params: {'join': 'madeInvoices'});
+    this.users.value = users;
+    return users;
   }
 }

@@ -8,6 +8,7 @@ import 'package:invictus/screens/products/product-manager.screen.dart';
 import 'package:invictus/screens/products/product.screen.dart';
 import 'package:invictus/screens/products/products.screen.dart';
 import 'package:invictus/screens/user/user-manager.screen.dart';
+import 'package:invictus/screens/user/users.screen.dart';
 import 'package:invictus/screens/vendor/vendor-manager.screen.dart';
 
 class Routes {
@@ -53,6 +54,10 @@ class Routes {
         name: '/invoices',
         page: () => InvoicesScreen(),
       ),
+      GetPage(
+        name: '/users',
+        page: () => UsersScreen(),
+      )
     ];
   }
 }

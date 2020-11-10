@@ -81,7 +81,7 @@ class _BestSellerState extends State<BestSeller> {
             backgroundColor: theme.primaryColor,
             textColor: Colors.white,
             onPressed: () {
-              Get.toNamed('/invoice-manager');
+              Get.toNamed('/users');
             },
             title: 'Ver todos',
           ),

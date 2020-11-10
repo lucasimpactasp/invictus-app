@@ -20,6 +20,20 @@ class _UserService extends BaseService<User> {
     return fromJson(res);
   }
 
+  Future<List<User>> search(Map<String, dynamic> body) async {
+    final response = await this
+        .post('/$endpoint/search', data: body)
+        .catchError((error) => throw (error));
+
+    if (response.data == null || response.data.isEmpty) {
+      return null;
+    }
+
+    final res = response.data;
+
+    return res.map((user) => fromJson(user)).toList();
+  }
+
   @override
   User fromJson(Map<String, dynamic> json) {
     return User.fromJson(json);

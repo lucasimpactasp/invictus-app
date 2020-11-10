@@ -6,7 +6,7 @@ import 'package:invictus/services/oauth/oauth.service.dart';
 import 'package:oauth_dio/oauth_dio.dart';
 
 abstract class BaseService<T extends Model> {
-  final String baseUrl = 'http://10.0.2.2:3000';
+  final String baseUrl = 'http://localhost:3000';
 
   String endpoint;
   static Dio _dio;
