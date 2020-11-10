@@ -42,6 +42,9 @@ class UserController extends GetxController {
   Future<List<User>> searchUser(Map<String, dynamic> body) async {
     final users = await userService.search(body);
     this.users.value = users;
+
+    print('asdsa');
+
     return users;
   }
 

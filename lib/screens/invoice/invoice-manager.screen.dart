@@ -88,6 +88,7 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                 children: [
                   Input(
                     controller: titleController,
+                    enabled: widget.invoice == null,
                     labelText: 'Título',
                   ),
                   Padding(
@@ -95,6 +96,7 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                     child: Input(
                       controller: discountController,
                       labelText: 'Desconto',
+                      enabled: widget.invoice == null,
                       keyboardType: TextInputType.number,
                       inputFormatters: [
                         FilteringTextInputFormatter.allow(
@@ -108,6 +110,7 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                     child: PaymentParcel(
                       valueController: totalController,
                       invoice: invoice,
+                      discountController: discountController,
                       onUpdateParcels: (List<Installment> installmentsRes) {
                         setState(() => installments = installmentsRes);
                       },
@@ -154,39 +157,24 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                       ),
                     ),
                   },
-                  Container(
-                    width: double.infinity,
-                    child: InvictusButton(
-                      backgroundColor: theme.primaryColor,
-                      textColor: Colors.white,
-                      onPressed: () async {
-                        int discount = 0;
+                  if (widget.invoice == null) ...{
+                    Container(
+                      width: double.infinity,
+                      child: InvictusButton(
+                        backgroundColor: theme.primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          int discount = 0;
 
-                        if (discountController.text.isNotEmpty) {
-                          discount = CurrencyUtil.cleanCurrencyMask(
-                              discountController.text);
-                        }
+                          if (discountController.text.isNotEmpty) {
+                            discount = CurrencyUtil.cleanCurrencyMask(
+                                discountController.text);
+                          }
 
-                        this.installments.forEach((installment) {
-                          installment.title = titleController.text;
-                        });
+                          this.installments.forEach((installment) {
+                            installment.title = titleController.text;
+                          });
 
-                        if (widget.invoice != null) {
-                          print('asdasdas');
-                          final UpdateInvoice invoice = UpdateInvoice(
-                            discount: discount,
-                            title: titleController.text,
-                            installments: this.installments,
-                            products: this.products,
-                          );
-
-                          print(invoice.toJson());
-
-                          await invoiceController.updateInvoice(
-                            this.invoice.id,
-                            invoice,
-                          );
-                        } else {
                           final CreateInvoice invoice = CreateInvoice(
                             discount: discount,
                             title: titleController.text,
@@ -195,18 +183,18 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                           );
 
                           await invoiceController.createInvoice(invoice);
-                        }
 
-                        await invoiceController.getInvoices();
+                          await invoiceController.getInvoices();
 
-                        Get.offAll(Home());
+                          Get.offAll(Home());
 
-                        BannerUtils.showBanner(
-                            'Feito!', 'Venda gerada com sucesso!');
-                      },
-                      title: 'Salvar',
+                          BannerUtils.showBanner(
+                              'Feito!', 'Venda gerada com sucesso!');
+                        },
+                        title: 'Salvar',
+                      ),
                     ),
-                  ),
+                  },
                 ],
               ),
             ),

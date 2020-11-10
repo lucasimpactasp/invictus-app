@@ -27,7 +27,9 @@ class User extends Model<String> {
     this.madeInvoices,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) {
+  factory User.fromJson(Map<String, dynamic> json,
+      {bool transformInInstance = true}) {
+    print(json['madeInvoices']);
     return User(
       id: json['id'],
       firstName: json['firstName'],
@@ -38,14 +40,18 @@ class User extends Model<String> {
       password: json['password'],
       role: json['role'],
       products: json['products'] != null
-          ? json['products']
-              .map((product) => Product.fromJson(product))
-              .toList()
+          ? !transformInInstance
+              ? json['products']
+              : json['products']
+                  .map<Product>((product) => Product.fromJson(product))
+                  .toList()
           : null,
       madeInvoices: json['madeInvoices'] != null
-          ? json['madeInvoices']
-              .map<Invoice>((invoice) => Invoice.fromJson(invoice))
-              .toList()
+          ? transformInInstance
+              ? json['madeInvoices']
+                  .map<Invoice>((invoice) => Invoice.fromJson(invoice))
+                  .toList()
+              : json['madeInvoices']
           : null,
     );
   }

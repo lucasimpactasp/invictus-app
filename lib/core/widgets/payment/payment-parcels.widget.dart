@@ -17,6 +17,7 @@ class PaymentParcel extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final Invoice invoice;
   final MoneyMaskedTextController valueController;
+  final MoneyMaskedTextController discountController;
   final double width;
   final bool showLabel;
 
@@ -27,6 +28,7 @@ class PaymentParcel extends StatefulWidget {
     this.formKey,
     this.invoice,
     this.valueController,
+    this.discountController,
     this.width,
     this.showLabel = false,
   });
@@ -134,7 +136,9 @@ class _PaymentParcelState extends State<PaymentParcel> {
       };
     });
     valueFocus = FocusNode();
-    widget.valueController.addListener(() {});
+    widget.valueController.addListener(() {
+      setState(() => ignoring = false);
+    });
 
     if (widget.invoice != null) {
       if (widget.invoice.total != null && widget.invoice.total > 0) {
@@ -228,6 +232,7 @@ class _PaymentParcelState extends State<PaymentParcel> {
       width: widget.width,
       height: 55,
       alignment: Alignment.center,
+      color: widget.invoice == null ? Colors.white : Colors.grey[200],
       child: Padding(
         padding: EdgeInsets.only(left: 16, right: 11),
         child: Row(
@@ -283,6 +288,7 @@ class _PaymentParcelState extends State<PaymentParcel> {
                     child: Input(
                       controller: widget.valueController,
                       focusNode: valueFocus,
+                      enabled: widget.invoice == null,
                       labelText: 'Valor da venda',
                       keyboardType: TextInputType.number,
                     ),
@@ -294,6 +300,12 @@ class _PaymentParcelState extends State<PaymentParcel> {
                     child: MenuButton(
                       child: installmentsButton,
                       items: items,
+                      labelDecoration: LabelDecoration(
+                        verticalMenuPadding: 12,
+                        background: widget.invoice == null
+                            ? Colors.white
+                            : Colors.grey[200],
+                      ),
                       label: selectedItem > 0
                           ? Text(
                               'Prestações',
@@ -345,6 +357,12 @@ class _PaymentParcelState extends State<PaymentParcel> {
                       },
                       onItemSelected: (value) {
                         valueFocus.unfocus();
+                        if (widget.invoice != null) {
+                          BannerUtils.showAttentionBanner(
+                            'Você não pode alterar as parcelas de uma venda já gerada.',
+                          );
+                          return;
+                        }
                         FocusScope.of(context).requestFocus(FocusNode());
 
                         setState(() => loading = true);
@@ -382,6 +400,12 @@ class _PaymentParcelState extends State<PaymentParcel> {
                             parcels.forEach((value) {
                               total += value.price;
                             });
+
+                            final discount = CurrencyUtil.cleanCurrencyMask(
+                              widget.discountController.text,
+                            );
+
+                            parcels[0].price = parcels[0].price - discount;
 
                             if (total < moneyValue) {
                               final count = moneyValue - total;
@@ -475,6 +499,7 @@ class _PaymentParcelState extends State<PaymentParcel> {
                                   child: Input(
                                     controller: controller,
                                     keyboardType: TextInputType.number,
+                                    enabled: widget.invoice == null,
                                     onChanged: (val) {
                                       final int parcelValue =
                                           CurrencyUtil.cleanCurrencyMask(val);

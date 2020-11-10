@@ -31,12 +31,21 @@ class _UserService extends BaseService<User> {
 
     final res = response.data;
 
-    return res.map((user) => fromJson(user)).toList();
+    print('xxx');
+
+    return res
+        .map<User>(
+          (user) => fromJson(
+            user,
+            transformInInstance: false,
+          ),
+        )
+        .toList();
   }
 
   @override
-  User fromJson(Map<String, dynamic> json) {
-    return User.fromJson(json);
+  User fromJson(Map<String, dynamic> json, {bool transformInInstance = true}) {
+    return User.fromJson(json, transformInInstance: transformInInstance);
   }
 
   @override
