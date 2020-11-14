@@ -4,6 +4,7 @@ import 'package:invictus/controller/product/product.controller.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/card/products/product.card.widget.dart';
 import 'package:invictus/core/widgets/input/input.widget.dart';
+import 'package:invictus/main.dart';
 import 'package:invictus/screens/products/product-manager.screen.dart';
 import 'package:invictus/screens/products/product.screen.dart';
 import 'package:invictus/utils/debounce/debounce.util.dart';
@@ -30,13 +31,15 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: theme.primaryColor,
-        child: Icon(Icons.add),
-        onPressed: () {
-          Get.toNamed('/product-manager');
-        },
-      ),
+      floatingActionButton: InvictusApp.role == 'admin'
+          ? FloatingActionButton(
+              backgroundColor: theme.primaryColor,
+              child: Icon(Icons.add),
+              onPressed: () {
+                Get.toNamed('/product-manager');
+              },
+            )
+          : null,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
         child: ListView(

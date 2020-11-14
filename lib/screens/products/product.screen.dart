@@ -6,6 +6,7 @@ import 'package:invictus/controller/vendor/vendor.controller.dart';
 import 'package:invictus/core/models/category/category.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/models/vendor/vendor.model.dart';
+import 'package:invictus/main.dart';
 import 'package:invictus/screens/category/category-manager.screen.dart';
 import 'package:invictus/screens/home/home.screen.dart';
 import 'package:invictus/screens/products/product-manager.screen.dart';
@@ -41,40 +42,42 @@ class _ProductScreenState extends State<ProductScreen> {
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: FloatingActionButton(
-              onPressed: () async {
-                await productService.deleteOne(widget.product.id);
+      floatingActionButton: InvictusApp.role == 'admin'
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: FloatingActionButton(
+                    onPressed: () async {
+                      await productService.deleteOne(widget.product.id);
 
-                Get.offAll(Home());
-              },
-              heroTag: null,
-              backgroundColor: theme.primaryColor,
-              child: Icon(
-                Icons.delete_outline,
-              ),
-            ),
-          ),
-          FloatingActionButton(
-            onPressed: () async {
-              Get.to(
-                ProductManager(
-                  product: widget.product,
+                      Get.offAll(Home());
+                    },
+                    heroTag: null,
+                    backgroundColor: theme.primaryColor,
+                    child: Icon(
+                      Icons.delete_outline,
+                    ),
+                  ),
                 ),
-              );
-            },
-            heroTag: null,
-            backgroundColor: theme.primaryColor,
-            child: Icon(
-              Icons.edit,
-            ),
-          ),
-        ],
-      ),
+                FloatingActionButton(
+                  onPressed: () async {
+                    Get.to(
+                      ProductManager(
+                        product: widget.product,
+                      ),
+                    );
+                  },
+                  heroTag: null,
+                  backgroundColor: theme.primaryColor,
+                  child: Icon(
+                    Icons.edit,
+                  ),
+                ),
+              ],
+            )
+          : null,
       body: loading
           ? Center(
               child: CircularProgressIndicator(),

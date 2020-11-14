@@ -10,6 +10,7 @@ import 'package:invictus/core/widgets/products/recent-products.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
 import 'package:invictus/core/widgets/sales/sales-chart.widget.dart';
 import 'package:invictus/core/widgets/user/best-seller.widget.dart';
+import 'package:invictus/main.dart';
 import 'package:invictus/screens/vendor/vendor-manager.screen.dart';
 import 'package:line_chart/model/line-chart.model.dart';
 
@@ -60,6 +61,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final ThemeData theme = Theme.of(context);
+    final String role = InvictusApp.role;
 
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
@@ -88,38 +90,40 @@ class _HomeState extends State<Home> {
                 },
               ),
             ),
-            Divider(),
-            ListTile(
-              title: Text('Cadastrar Produto'),
-              onTap: () {
-                Get.toNamed('/product-manager');
-              },
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Cadastrar Categoria'),
-              onTap: () {
-                Get.toNamed('/category-manager');
-              },
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Cadastrar Fornecedor'),
-              onTap: () {
-                Get.to(
-                  VendorManagerScreen(
-                    products: productController.products,
-                  ),
-                );
-              },
-            ),
-            Divider(),
-            ListTile(
-              title: Text('Cadastrar Usuário'),
-              onTap: () {
-                Get.toNamed('/user-manager');
-              },
-            ),
+            if (role == 'admin') ...{
+              Divider(),
+              ListTile(
+                title: Text('Cadastrar Produto'),
+                onTap: () {
+                  Get.toNamed('/product-manager');
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text('Cadastrar Categoria'),
+                onTap: () {
+                  Get.toNamed('/category-manager');
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text('Cadastrar Fornecedor'),
+                onTap: () {
+                  Get.to(
+                    VendorManagerScreen(
+                      products: productController.products,
+                    ),
+                  );
+                },
+              ),
+              Divider(),
+              ListTile(
+                title: Text('Cadastrar Usuário'),
+                onTap: () {
+                  Get.toNamed('/user-manager');
+                },
+              ),
+            },
           ],
         ),
       ),

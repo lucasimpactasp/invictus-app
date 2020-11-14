@@ -6,6 +6,7 @@ import 'package:invictus/core/models/widgets/responsive/responsive.model.dart';
 import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/core/widgets/card/products/product.card.widget.dart';
 import 'package:invictus/core/widgets/responsive/responsive.widget.dart';
+import 'package:invictus/main.dart';
 import 'package:invictus/screens/products/product.screen.dart';
 import 'package:invictus/services/product/product.service.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
@@ -122,14 +123,16 @@ class _RecentProductsState extends State<RecentProducts> {
 
               return Container();
             }),
-            InvictusButton(
-              backgroundColor: theme.primaryColor,
-              textColor: Colors.white,
-              onPressed: () {
-                Get.toNamed('/product-manager');
-              },
-              title: 'Cadastrar produto',
-            ),
+            if (InvictusApp.role == 'admin') ...{
+              InvictusButton(
+                backgroundColor: theme.primaryColor,
+                textColor: Colors.white,
+                onPressed: () {
+                  Get.toNamed('/product-manager');
+                },
+                title: 'Cadastrar produto',
+              ),
+            },
           },
         ],
       ),

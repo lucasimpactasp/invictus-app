@@ -102,15 +102,17 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: InvictusAppBar.getAppBar(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            await userService.deleteOne(widget.user.id);
-            Get.to(Home());
-          },
-          heroTag: null,
-          backgroundColor: theme.primaryColor,
-          child: Icon(Icons.delete_outline),
-        ),
+        floatingActionButton: InvictusApp.role == 'admin'
+            ? FloatingActionButton(
+                onPressed: () async {
+                  await userService.deleteOne(widget.user.id);
+                  Get.to(Home());
+                },
+                heroTag: null,
+                backgroundColor: theme.primaryColor,
+                child: Icon(Icons.delete_outline),
+              )
+            : null,
         body: Padding(
           padding: const EdgeInsets.all(24),
           child: ListView(
@@ -211,45 +213,47 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
                         obscureText: true,
                       ),
                     },
-                    InvictusButton(
-                      backgroundColor: theme.primaryColor,
-                      textColor: Colors.white,
-                      onPressed: () async {
-                        String text = 'Usuário criado com sucesso!';
+                    if (InvictusApp.role == 'admin') ...{
+                      InvictusButton(
+                        backgroundColor: theme.primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          String text = 'Usuário criado com sucesso!';
 
-                        final UserController userController = Get.put(
-                          UserController(),
-                        );
-
-                        final UserParams userParams = UserParams(
-                          email: emailController.text,
-                          firstName: nameController.text,
-                          lastName: lastNameController.text,
-                          gender: _radioValue,
-                          password: passwordController.text,
-                          role: selectedItem,
-                          username: usernameController.text,
-                        );
-
-                        if (widget.user != null) {
-                          await userController.updateUser(
-                            widget.user.id,
-                            userParams,
+                          final UserController userController = Get.put(
+                            UserController(),
                           );
 
-                          text = 'Usuário alterado com sucesso!';
-                        } else {
-                          await userController.createUser(userParams);
-                        }
+                          final UserParams userParams = UserParams(
+                            email: emailController.text,
+                            firstName: nameController.text,
+                            lastName: lastNameController.text,
+                            gender: _radioValue,
+                            password: passwordController.text,
+                            role: selectedItem,
+                            username: usernameController.text,
+                          );
 
-                        Get.offAll(Home());
+                          if (widget.user != null) {
+                            await userController.updateUser(
+                              widget.user.id,
+                              userParams,
+                            );
 
-                        BannerUtils.showBanner('Feito!', text);
-                      },
-                      title: widget.user != null
-                          ? 'Editar usuário'
-                          : 'Cadastrar usuário',
-                    ),
+                            text = 'Usuário alterado com sucesso!';
+                          } else {
+                            await userController.createUser(userParams);
+                          }
+
+                          Get.offAll(Home());
+
+                          BannerUtils.showBanner('Feito!', text);
+                        },
+                        title: widget.user != null
+                            ? 'Editar usuário'
+                            : 'Cadastrar usuário',
+                      ),
+                    },
                   ],
                 ),
               )
