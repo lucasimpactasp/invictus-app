@@ -13,6 +13,8 @@ void main() async {
 final storage = FlutterSecureStorage();
 
 class InvictusApp extends StatelessWidget {
+  static String role = 'default';
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

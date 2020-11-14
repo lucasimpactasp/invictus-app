@@ -110,4 +110,9 @@ abstract class BaseService<T extends Model> {
 
     return fromJson(response.data);
   }
+
+  Future<void> deleteOne(String id) async {
+    await _dio.delete('/$endpoint/$id');
+    return;
+  }
 }

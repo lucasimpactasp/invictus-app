@@ -7,8 +7,10 @@ import 'package:invictus/core/models/category/category.model.dart';
 import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/models/vendor/vendor.model.dart';
 import 'package:invictus/screens/category/category-manager.screen.dart';
+import 'package:invictus/screens/home/home.screen.dart';
 import 'package:invictus/screens/products/product-manager.screen.dart';
 import 'package:invictus/screens/vendor/vendor-manager.screen.dart';
+import 'package:invictus/services/product/product.service.dart';
 import 'package:invictus/utils/currency/currency.utils.dart';
 import 'dart:io' show Platform;
 
@@ -39,18 +41,39 @@ class _ProductScreenState extends State<ProductScreen> {
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          Get.to(
-            ProductManager(
-              product: widget.product,
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: FloatingActionButton(
+              onPressed: () async {
+                await productService.deleteOne(widget.product.id);
+
+                Get.offAll(Home());
+              },
+              heroTag: null,
+              backgroundColor: theme.primaryColor,
+              child: Icon(
+                Icons.delete_outline,
+              ),
             ),
-          );
-        },
-        backgroundColor: theme.primaryColor,
-        child: Icon(
-          Icons.edit,
-        ),
+          ),
+          FloatingActionButton(
+            onPressed: () async {
+              Get.to(
+                ProductManager(
+                  product: widget.product,
+                ),
+              );
+            },
+            heroTag: null,
+            backgroundColor: theme.primaryColor,
+            child: Icon(
+              Icons.edit,
+            ),
+          ),
+        ],
       ),
       body: loading
           ? Center(
@@ -65,17 +88,17 @@ class _ProductScreenState extends State<ProductScreen> {
                     height: 300,
                     alignment: Alignment.topLeft,
                     padding: EdgeInsets.all(24),
-                    decoration: product.imageUrl.isNotEmpty
-                        ? BoxDecoration(
-                            image: DecorationImage(
+                    decoration: BoxDecoration(
+                      image: product.imageUrl.isNotEmpty
+                          ? DecorationImage(
                               image: NetworkImage(
                                 product.imageUrl,
                               ),
                               fit: BoxFit.cover,
-                            ),
-                            color: theme.primaryColor,
-                          )
-                        : null,
+                            )
+                          : null,
+                      color: theme.primaryColor,
+                    ),
                     child: GestureDetector(
                       onTap: () => Get.back(),
                       child: Icon(

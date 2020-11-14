@@ -6,7 +6,9 @@ import 'package:invictus/core/models/product/product.model.dart';
 import 'package:invictus/core/models/vendor/vendor.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/button/button.widget.dart';
+import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/screens/home/home.screen.dart';
+import 'package:invictus/services/vendor/vendor.service.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
@@ -59,73 +61,96 @@ class _VendorManagerScreenState extends State<VendorManagerScreen> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: InvictusAppBar.getAppBar(),
-        body: ListView(
-          children: [
-            Form(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: InputDecoration(
+        floatingActionButton: widget.vendor != null
+            ? FloatingActionButton(
+                onPressed: () async {
+                  await vendorController.updateVendor(
+                    widget.vendor.id,
+                    VendorParams(
+                      name: widget.vendor.name,
+                      email: widget.vendor.email,
+                      phone: widget.vendor.phone,
+                      products: [],
+                    ),
+                  );
+                  await vendorService.deleteOne(widget.vendor.id);
+
+                  Get.offAll(Home());
+                },
+                heroTag: null,
+                backgroundColor: theme.primaryColor,
+                child: Icon(
+                  Icons.delete_outline,
+                ),
+              )
+            : null,
+        body: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ListView(
+            children: [
+              Form(
+                child: Column(
+                  children: [
+                    Input(
+                      controller: nameController,
                       labelText: 'Nome do fornecedor',
                     ),
-                  ),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Input(
+                        controller: emailController,
+                        labelText: 'Email',
+                        keyboardType: TextInputType.emailAddress,
+                      ),
                     ),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  TextField(
-                    controller: phoneController,
-                    decoration: InputDecoration(
+                    Input(
+                      controller: phoneController,
                       labelText: 'Telefone',
                     ),
-                  ),
-                  if (products.length > 0) ...{
-                    MultiSelectFormField(
-                      autovalidate: false,
-                      chipBackGroundColor: Colors.red,
-                      chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-                      dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                      checkBoxActiveColor: Colors.red,
-                      checkBoxCheckColor: Colors.green,
-                      dialogShapeBorder: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0))),
-                      title: Text(
-                        "Produtos",
-                        style: TextStyle(fontSize: 16),
+                    if (widget.products.length > 0) ...{
+                      MultiSelectFormField(
+                        autovalidate: false,
+                        chipBackGroundColor: theme.primaryColor,
+                        chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
+                        dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
+                        checkBoxActiveColor: theme.primaryColor,
+                        checkBoxCheckColor: Colors.white,
+                        dialogShapeBorder: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(12.0))),
+                        title: Text(
+                          "Produtos",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        dataSource: widget.products
+                            .map((e) => e.toJson(addId: true))
+                            .toList(),
+                        textField: 'name',
+                        valueField: 'id',
+                        okButtonLabel: 'Adicionar',
+                        cancelButtonLabel: 'Cancelar',
+                        hintWidget: Text('Clique para selecionar'),
+                        initialValue: this.products,
+                        onSaved: (value) {
+                          if (value == null) return;
+                          setState(() {
+                            this.products =
+                                value.map<String>((v) => v.toString()).toList();
+                          });
+                        },
                       ),
-                      dataSource: widget.products
-                          .map((e) => e.toJson(addId: true))
-                          .toList(),
-                      textField: 'name',
-                      valueField: 'id',
-                      okButtonLabel: 'Adicionar',
-                      cancelButtonLabel: 'Cancelar',
-                      hintWidget: Text('Clique para selecionar'),
-                      initialValue: this.products,
-                      onSaved: (value) {
-                        if (value == null) return;
-                        setState(() {
-                          this.products =
-                              value.map<String>((v) => v.toString()).toList();
-                        });
-                      },
-                    ),
-                  } else ...{
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 12),
-                      child: Text(
-                          'Não há nenhum produto cadastrado para poder selecionar'),
-                    ),
-                  },
-                  Container(
+                    } else ...{
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Text(
+                            'Não há nenhum produto cadastrado para poder selecionar'),
+                      ),
+                    },
+                    Container(
                       width: double.infinity,
-                      margin: EdgeInsets.all(24),
                       child: InvictusButton(
+                        backgroundColor: theme.primaryColor,
+                        textColor: Colors.white,
                         onPressed: () async {
                           String phone = '';
                           String text = 'Fornecedor criado com sucesso!';
@@ -165,11 +190,13 @@ class _VendorManagerScreenState extends State<VendorManagerScreen> {
                         title: widget.vendor != null
                             ? 'Editar fornecedor'
                             : 'Salvar fornecedor',
-                      )),
-                ],
-              ),
-            )
-          ],
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

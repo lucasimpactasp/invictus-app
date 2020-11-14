@@ -279,6 +279,13 @@ class _ProductManagerState extends State<ProductManager> {
                     controller: imageController,
                     labelText: 'URL Da imagem',
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    child: Input(
+                      controller: descriptionController,
+                      labelText: 'Descrição',
+                    ),
+                  ),
                   InvictusButton(
                     backgroundColor: theme.primaryColor,
                     textColor: Colors.white,
@@ -323,7 +330,7 @@ class _ProductManagerState extends State<ProductManager> {
                           widget.product.id,
                           product,
                         );
-                        await productController.getMany();
+
                         BannerUtils.showBanner(
                           'Feito!',
                           'Produto alterado com sucesso.',

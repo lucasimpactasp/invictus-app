@@ -8,6 +8,8 @@ import 'package:invictus/utils/storage/storage.utils.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:oauth_dio/oauth_dio.dart';
 
+import '../../main.dart';
+
 final OAuth oauth = OAuth(
   tokenUrl: 'http://10.0.2.2:3000/oauth/token',
   clientId: '433535ea-a184-4bd2-9f51-4570441bfb07',
@@ -81,7 +83,9 @@ class _OAuthService extends BaseService {
     final UserController userController = Get.put(UserController());
 
     await oauth.storage.save(token);
-    await userController.getUser();
+
+    final user = await userController.getUser();
+    InvictusApp.role = user.role;
     return token;
   }
 

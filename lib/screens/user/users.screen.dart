@@ -27,6 +27,7 @@ class _UsersScreenState extends State<UsersScreen> {
 
   void init() async {
     final users = await userController.getUsers();
+    users.sort((a, b) => b.madeInvoices.length - a.madeInvoices.length);
     setState(() => this.users = users);
   }
 
@@ -40,7 +41,7 @@ class _UsersScreenState extends State<UsersScreen> {
         backgroundColor: theme.primaryColor,
         child: Icon(Icons.add),
         onPressed: () {
-          Get.toNamed('/product-manager');
+          Get.toNamed('/user-manager');
         },
       ),
       body: GestureDetector(

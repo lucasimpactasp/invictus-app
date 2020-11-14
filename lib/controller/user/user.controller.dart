@@ -11,7 +11,7 @@ class UserController extends GetxController {
     super.onInit();
   }
 
-  Future getUser() async {
+  Future<User> getUser() async {
     final userRes = await userService.getOne('me');
     user.value = userRes;
 

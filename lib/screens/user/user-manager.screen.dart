@@ -7,7 +7,9 @@ import 'package:invictus/core/models/user/user.model.dart';
 import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/core/widgets/input/input.widget.dart';
+import 'package:invictus/main.dart';
 import 'package:invictus/screens/home/home.screen.dart';
+import 'package:invictus/services/user/user.service.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:menu_button/menu_button.dart';
 
@@ -100,6 +102,15 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
         appBar: InvictusAppBar.getAppBar(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            await userService.deleteOne(widget.user.id);
+            Get.to(Home());
+          },
+          heroTag: null,
+          backgroundColor: theme.primaryColor,
+          child: Icon(Icons.delete_outline),
+        ),
         body: Padding(
           padding: const EdgeInsets.all(24),
           child: ListView(
@@ -122,7 +133,7 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
                     ),
                     Input(
                       controller: usernameController,
-                      labelText: 'username',
+                      labelText: 'Usuário',
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
@@ -135,41 +146,45 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
                         keyboardType: TextInputType.emailAddress,
                       ),
                     ),
-                    MenuButton(
-                      child: button, // Widget displayed as the button
-                      items: items, // List of your items
-                      topDivider: true,
-                      label: Text('Cargo'),
-                      scrollPhysics:
-                          AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
-                      itemBuilder: (value) => Container(
-                        width: MediaQuery.of(context).size.width / 2 - 24,
-                        height: 40,
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(value),
-                      ), // Widget displayed for each item
-                      toggledChild: Container(
-                        color: Colors.white,
-                        child: button, // Widget displayed as the button,
+                    if (InvictusApp.role == 'admin') ...{
+                      MenuButton(
+                        child: button, // Widget displayed as the button
+                        items: items, // List of your items
+                        topDivider: true,
+                        label: Text('Cargo'),
+                        scrollPhysics:
+                            AlwaysScrollableScrollPhysics(), // Change the physics of opened menu (example: you can remove or add scroll to menu)
+                        itemBuilder: (value) => Container(
+                          width: MediaQuery.of(context).size.width / 2 - 24,
+                          height: 40,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Text(value),
+                        ), // Widget displayed for each item
+                        toggledChild: Container(
+                          color: Colors.white,
+                          child: button, // Widget displayed as the button,
+                        ),
+                        divider: Container(
+                          height: 1,
+                          color: Colors.grey,
+                        ),
+                        onItemSelected: (value) {
+                          selectedItem = value;
+                          // Action when new item is selected
+                        },
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey[300]),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(3.0)),
+                            color: Colors.white),
+                        onMenuButtonToggle: (isToggle) {
+                          print(isToggle);
+                        },
                       ),
-                      divider: Container(
-                        height: 1,
-                        color: Colors.grey,
-                      ),
-                      onItemSelected: (value) {
-                        selectedItem = value;
-                        // Action when new item is selected
-                      },
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey[300]),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(3.0)),
-                          color: Colors.white),
-                      onMenuButtonToggle: (isToggle) {
-                        print(isToggle);
-                      },
-                    ),
+                    } else ...{
+                      Text('Cargo: ${widget.user.role}')
+                    },
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
@@ -189,12 +204,10 @@ class _UserManagerScreenState extends State<UserManagerScreen> {
                         new Text('Mulher'),
                       ],
                     ),
-                    if (widget.user == null) ...{
-                      TextFormField(
+                    if (widget.user == null || InvictusApp.role == 'admin') ...{
+                      Input(
                         controller: passwordController,
-                        decoration: InputDecoration(
-                          labelText: 'Senha',
-                        ),
+                        labelText: 'Senha',
                         obscureText: true,
                       ),
                     },

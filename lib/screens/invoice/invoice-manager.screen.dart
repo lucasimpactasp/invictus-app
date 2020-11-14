@@ -41,7 +41,7 @@ class _InvoiceManagerState extends State<InvoiceManager> {
   List<String> products = [];
 
   Invoice invoice;
-  bool showProducts = false;
+  bool showProducts = true;
 
   @override
   void initState() {
@@ -75,7 +75,6 @@ class _InvoiceManagerState extends State<InvoiceManager> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final List<Product> products = productController.products;
 
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
@@ -93,70 +92,63 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
-                    child: Input(
-                      controller: discountController,
-                      labelText: 'Desconto',
-                      enabled: widget.invoice == null,
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp('[0-9.,]'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
                     child: PaymentParcel(
                       valueController: totalController,
                       invoice: invoice,
-                      discountController: discountController,
                       onUpdateParcels: (List<Installment> installmentsRes) {
                         setState(() => installments = installmentsRes);
                       },
                     ),
                   ),
-                  if (products != null &&
-                      products.length > 0 &&
-                      showProducts) ...{
-                    Padding(
-                      padding: EdgeInsets.only(top: 12),
-                      child: MultiSelectFormField(
-                        autovalidate: false,
-                        chipBackGroundColor: theme.primaryColor,
-                        chipLabelStyle: TextStyle(fontWeight: FontWeight.bold),
-                        dialogTextStyle: TextStyle(fontWeight: FontWeight.bold),
-                        checkBoxActiveColor: theme.primaryColor,
-                        checkBoxCheckColor: Colors.white,
-                        fillColor: Colors.white,
-                        border: InputBorder.none,
-                        dialogShapeBorder: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(12.0),
+                  Obx(() {
+                    if (productController.productsValue != null &&
+                        productController.productsValue.length > 0 &&
+                        showProducts) {
+                      return Padding(
+                        padding: EdgeInsets.only(top: 12),
+                        child: MultiSelectFormField(
+                          autovalidate: false,
+                          chipBackGroundColor: theme.primaryColor,
+                          chipLabelStyle:
+                              TextStyle(fontWeight: FontWeight.bold),
+                          dialogTextStyle:
+                              TextStyle(fontWeight: FontWeight.bold),
+                          checkBoxActiveColor: theme.primaryColor,
+                          checkBoxCheckColor: Colors.white,
+                          fillColor: Colors.white,
+                          border: InputBorder.none,
+                          dialogShapeBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(12.0),
+                            ),
                           ),
+                          title: Text(
+                            'Produtos da venda',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                          dataSource: productController.productsValue
+                              .map((e) => e.toJson(addId: true))
+                              .toList(),
+                          textField: 'name',
+                          valueField: 'id',
+                          okButtonLabel: 'Adicionar',
+                          cancelButtonLabel: 'Cancelar',
+                          hintWidget: Text('Clique para selecionar'),
+                          initialValue: this.products,
+                          onSaved: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              this.products = value
+                                  .map<String>((v) => v.toString())
+                                  .toList();
+                            });
+                          },
                         ),
-                        title: Text(
-                          'Produtos da venda',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        dataSource:
-                            products.map((e) => e.toJson(addId: true)).toList(),
-                        textField: 'name',
-                        valueField: 'id',
-                        okButtonLabel: 'Adicionar',
-                        cancelButtonLabel: 'Cancelar',
-                        hintWidget: Text('Clique para selecionar'),
-                        initialValue: this.products,
-                        onSaved: (value) {
-                          if (value == null) return;
-                          setState(() {
-                            this.products =
-                                value.map<String>((v) => v.toString()).toList();
-                          });
-                        },
-                      ),
-                    ),
-                  },
+                      );
+                    }
+
+                    return Container();
+                  }),
                   if (widget.invoice == null) ...{
                     Container(
                       width: double.infinity,
@@ -194,7 +186,7 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                         title: 'Salvar',
                       ),
                     ),
-                  },
+                  }
                 ],
               ),
             ),

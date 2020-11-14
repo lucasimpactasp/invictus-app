@@ -11,29 +11,29 @@ class InvictusAppBar {
       ),
       centerTitle: true,
       actions: [
-        Align(
-          alignment: Alignment.center,
-          child: Row(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  right: 12,
+        GestureDetector(
+          onTap: () {
+            Get.offAllNamed('/login');
+            oAuthService.logout();
+          },
+          child: Align(
+            alignment: Alignment.center,
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    right: 12,
+                  ),
+                  child: Text(
+                    'Sair',
+                  ),
                 ),
-                child: Text(
-                  'Sair',
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Get.offAllNamed('/login');
-                  oAuthService.logout();
-                },
-                child: Icon(
+                Icon(
                   Icons.logout,
                   color: Colors.white,
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],

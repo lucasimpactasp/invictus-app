@@ -7,9 +7,8 @@ class _ProductService extends BaseService<Product> {
   _ProductService({this.endpoint = 'product'}) : super(endpoint);
 
   Future<List<Product>> getProducts() async {
-    final response = await this
-        .get('/$endpoint?join=category&join=vendor')
-        .catchError((error) => throw (error));
+    final response =
+        await this.get('/$endpoint').catchError((error) => throw (error));
 
     if (response == null) {
       throw ('Error to get many from $endpoint');

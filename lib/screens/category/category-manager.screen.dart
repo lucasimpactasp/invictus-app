@@ -8,6 +8,7 @@ import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/screens/home/home.screen.dart';
+import 'package:invictus/services/category/category.service.dart';
 import 'package:invictus/utils/banner/banner.utils.dart';
 import 'package:multiselect_formfield/multiselect_formfield.dart';
 
@@ -58,6 +59,27 @@ class _CategoryManagerScreenState extends State<CategoryManagerScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
       child: Scaffold(
+        floatingActionButton: widget.category != null
+            ? FloatingActionButton(
+                onPressed: () async {
+                  await categoryController.updateCategory(
+                    widget.category.id,
+                    CategoryParams(
+                      name: widget.category.name,
+                      products: [],
+                    ),
+                  );
+                  await categoryService.deleteOne(widget.category.id);
+
+                  Get.offAll(Home());
+                },
+                heroTag: null,
+                backgroundColor: theme.primaryColor,
+                child: Icon(
+                  Icons.delete_outline,
+                ),
+              )
+            : null,
         appBar: InvictusAppBar.getAppBar(),
         body: Padding(
           padding: const EdgeInsets.all(24.0),

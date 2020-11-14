@@ -59,6 +59,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final ThemeData theme = Theme.of(context);
 
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
@@ -66,26 +67,42 @@ class _HomeState extends State<Home> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: <Widget>[
+            DrawerHeader(
+              padding: EdgeInsets.zero,
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: theme.primaryColor,
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage('assets/logo_black.png'),
+                  ),
+                ),
+              ),
+            ),
             SafeArea(
               child: ListTile(
-                title: Text('Cadastrar venda'),
+                title: Text('Cadastrar Venda'),
                 onTap: () {
                   Get.toNamed('/invoice-manager');
                 },
               ),
             ),
+            Divider(),
             ListTile(
               title: Text('Cadastrar Produto'),
               onTap: () {
                 Get.toNamed('/product-manager');
               },
             ),
+            Divider(),
             ListTile(
               title: Text('Cadastrar Categoria'),
               onTap: () {
                 Get.toNamed('/category-manager');
               },
             ),
+            Divider(),
             ListTile(
               title: Text('Cadastrar Fornecedor'),
               onTap: () {
@@ -96,6 +113,7 @@ class _HomeState extends State<Home> {
                 );
               },
             ),
+            Divider(),
             ListTile(
               title: Text('Cadastrar Usuário'),
               onTap: () {

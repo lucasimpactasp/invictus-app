@@ -6,6 +6,8 @@ class ProductController extends GetxController {
   RxList<Product> products = <Product>[].obs;
   Rx<Product> activeProduct = Product().obs;
 
+  List<Product> get productsValue => products.toList();
+
   Future<Product> getOne(String id) async {
     final Product productRes = await productService.getOne(id);
     activeProduct.value = productRes;

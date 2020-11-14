@@ -37,7 +37,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
         backgroundColor: theme.primaryColor,
         child: Icon(Icons.add),
         onPressed: () {
-          Get.toNamed('/product-manager');
+          Get.toNamed('/invoice-manager');
         },
       ),
       body: GestureDetector(
@@ -98,7 +98,8 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                 margin:
                                     invoiceController.invoices.last == invoice
                                         ? EdgeInsets.symmetric(horizontal: 24)
-                                        : EdgeInsets.all(24),
+                                        : EdgeInsets.symmetric(
+                                            horizontal: 24, vertical: 12),
                                 padding: EdgeInsets.all(24),
                                 decoration: BoxDecoration(
                                   color: Colors.white,

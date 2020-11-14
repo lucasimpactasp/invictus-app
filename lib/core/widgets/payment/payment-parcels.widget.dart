@@ -17,7 +17,6 @@ class PaymentParcel extends StatefulWidget {
   final GlobalKey<FormState> formKey;
   final Invoice invoice;
   final MoneyMaskedTextController valueController;
-  final MoneyMaskedTextController discountController;
   final double width;
   final bool showLabel;
 
@@ -28,7 +27,6 @@ class PaymentParcel extends StatefulWidget {
     this.formKey,
     this.invoice,
     this.valueController,
-    this.discountController,
     this.width,
     this.showLabel = false,
   });
@@ -400,12 +398,6 @@ class _PaymentParcelState extends State<PaymentParcel> {
                             parcels.forEach((value) {
                               total += value.price;
                             });
-
-                            final discount = CurrencyUtil.cleanCurrencyMask(
-                              widget.discountController.text,
-                            );
-
-                            parcels[0].price = parcels[0].price - discount;
 
                             if (total < moneyValue) {
                               final count = moneyValue - total;

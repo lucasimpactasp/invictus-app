@@ -5,6 +5,7 @@ import 'package:invictus/core/widgets/appbar/invictus-appbar.widget.dart';
 import 'package:invictus/core/widgets/card/products/product.card.widget.dart';
 import 'package:invictus/core/widgets/input/input.widget.dart';
 import 'package:invictus/screens/products/product-manager.screen.dart';
+import 'package:invictus/screens/products/product.screen.dart';
 import 'package:invictus/utils/debounce/debounce.util.dart';
 
 class ProductsScreen extends StatefulWidget {
@@ -84,7 +85,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             (product) => GestureDetector(
                               onTap: () {
                                 Get.to(
-                                  ProductManager(
+                                  ProductScreen(
                                     product: product,
                                   ),
                                 );

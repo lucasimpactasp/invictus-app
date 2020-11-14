@@ -31,7 +31,6 @@ class _RecentProductsState extends State<RecentProducts> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final List<Product> products = productController.products;
 
     return Container(
       padding: EdgeInsets.all(24),
@@ -62,50 +61,67 @@ class _RecentProductsState extends State<RecentProducts> {
           if (widget.loading) ...{
             CircularProgressIndicator(),
           } else ...{
-            if (products != null) ...{
-              if (products.length > 0) ...{
-                ResponsiveLayout(
-                  mobile: Column(
-                    children: products
-                        .sublist(0, products.length > 3 ? 3 : products.length)
-                        .map((product) {
-                      return Container(
-                        padding: products.last != product
-                            ? const EdgeInsets.only(bottom: 24)
-                            : EdgeInsets.zero,
-                        width: double.infinity,
-                        child: RecentProductCard(
-                          products: products,
-                          theme: theme,
-                          product: product,
+            Obx(() {
+              if (productController.productsValue != null) {
+                if (productController.productsValue.length > 0) {
+                  return Column(
+                    children: [
+                      ResponsiveLayout(
+                        mobile: Column(
+                          children: productController.productsValue
+                              .sublist(
+                                  0,
+                                  productController.productsValue.length > 3
+                                      ? 3
+                                      : productController.productsValue.length)
+                              .map((product) {
+                            return Container(
+                              padding: productController.productsValue.last !=
+                                      product
+                                  ? const EdgeInsets.only(bottom: 24)
+                                  : EdgeInsets.zero,
+                              width: double.infinity,
+                              child: RecentProductCard(
+                                products: productController.productsValue,
+                                theme: theme,
+                                product: product,
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  desktop: Row(
-                    children: products
-                        .sublist(0, products.length > 3 ? 3 : products.length)
-                        .map((product) {
-                      return RecentProductCard(
-                        products: products,
-                        theme: theme,
-                        product: product,
-                      );
-                    }).toList(),
-                  ),
-                ),
-                InvictusButton(
-                  backgroundColor: theme.primaryColor,
-                  textColor: Colors.white,
-                  onPressed: () {
-                    Get.toNamed('/products');
-                  },
-                  title: 'Ver todos',
-                ),
-              } else ...{
-                Text('Não há produtos cadastrados')
+                        desktop: Row(
+                          children: productController.productsValue
+                              .sublist(
+                                  0,
+                                  productController.productsValue.length > 3
+                                      ? 3
+                                      : productController.productsValue.length)
+                              .map((product) {
+                            return RecentProductCard(
+                              products: productController.productsValue,
+                              theme: theme,
+                              product: product,
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                      InvictusButton(
+                        backgroundColor: theme.primaryColor,
+                        textColor: Colors.white,
+                        onPressed: () {
+                          Get.toNamed('/products');
+                        },
+                        title: 'Ver todos',
+                      ),
+                    ],
+                  );
+                } else {
+                  return Text('Não há produtos cadastrados');
+                }
               }
-            },
+
+              return Container();
+            }),
             InvictusButton(
               backgroundColor: theme.primaryColor,
               textColor: Colors.white,
