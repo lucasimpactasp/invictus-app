@@ -41,6 +41,8 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
+    print(InvictusApp.role);
+
     return Scaffold(
       floatingActionButton: InvictusApp.role == 'admin'
           ? Row(
@@ -144,7 +146,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             ),
                             Text(
                               CurrencyUtil.addCurrencyMask(
-                                  widget.product.price ?? 0),
+                                  widget.product.price / 100 ?? 0),
                               style: theme.textTheme.headline6.copyWith(
                                 fontSize: 16,
                                 color: theme.textTheme.bodyText2.color,

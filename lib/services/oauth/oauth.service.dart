@@ -64,8 +64,6 @@ class TicketGrant extends OAuthGrantType {
 
 class _OAuthService extends BaseService {
   final FlutterSecureStorage storage = FlutterSecureStorage();
-  final String clientId = '433535ea-a184-4bd2-9f51-4570441bfb07';
-  final String clientSecret = 'invictus';
 
   String endpoint;
 

@@ -94,6 +94,10 @@ class _ProductManagerState extends State<ProductManager> {
       if (widget.product.category != null) {
         setState(() => selectedItem = widget.product.category);
       }
+
+      if (widget.product.vendor != null) {
+        setState(() => selectedVendor = widget.product.vendor);
+      }
     }
   }
 
@@ -210,6 +214,14 @@ class _ProductManagerState extends State<ProductManager> {
                     ),
                   } else ...{
                     Text('Não há nenhuma categoria cadastrada'),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 24),
+                      child: InvictusButton(
+                        onPressed: () => Get.offNamed('/category-manager'),
+                        title: 'Cadastrar',
+                      ),
+                    ),
                   },
                   if (this.vendors.length > 0) ...{
                     MenuButton(
@@ -249,6 +261,14 @@ class _ProductManagerState extends State<ProductManager> {
                     ),
                   } else ...{
                     Text('Não há nenhum fornecedor cadastrado'),
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 24),
+                      child: InvictusButton(
+                        onPressed: () => Get.offNamed('/vendor-manager'),
+                        title: 'Cadastrar',
+                      ),
+                    ),
                   },
                   Padding(
                     padding: const EdgeInsets.only(top: 12.0),
@@ -267,6 +287,7 @@ class _ProductManagerState extends State<ProductManager> {
                   Input(
                     controller: quantityController,
                     labelText: 'Quantidade',
+                    keyboardType: TextInputType.number,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 24),

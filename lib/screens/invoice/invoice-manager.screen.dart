@@ -33,6 +33,8 @@ class _InvoiceManagerState extends State<InvoiceManager> {
       MoneyMaskedTextController(leftSymbol: 'R\$ ');
   final MoneyMaskedTextController totalController =
       MoneyMaskedTextController(leftSymbol: 'R\$ ');
+  final TextEditingController quantityController =
+      TextEditingController(text: '1');
 
   final InvoiceController invoiceController = Get.put(InvoiceController());
   final ProductController productController = Get.put(ProductController());
@@ -89,6 +91,15 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                     controller: titleController,
                     enabled: widget.invoice == null,
                     labelText: 'Título',
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Input(
+                      controller: quantityController,
+                      enabled: widget.invoice == null,
+                      labelText: 'Quantidade de produtos',
+                      keyboardType: TextInputType.number,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 12),
@@ -156,22 +167,15 @@ class _InvoiceManagerState extends State<InvoiceManager> {
                         backgroundColor: theme.primaryColor,
                         textColor: Colors.white,
                         onPressed: () async {
-                          int discount = 0;
-
-                          if (discountController.text.isNotEmpty) {
-                            discount = CurrencyUtil.cleanCurrencyMask(
-                                discountController.text);
-                          }
-
                           this.installments.forEach((installment) {
                             installment.title = titleController.text;
                           });
 
                           final CreateInvoice invoice = CreateInvoice(
-                            discount: discount,
                             title: titleController.text,
                             installments: this.installments,
                             products: this.products,
+                            quantity: int.parse(this.quantityController.text),
                           );
 
                           await invoiceController.createInvoice(invoice);

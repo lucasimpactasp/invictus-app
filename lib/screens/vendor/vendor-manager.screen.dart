@@ -110,7 +110,8 @@ class _VendorManagerScreenState extends State<VendorManagerScreen> {
                       controller: phoneController,
                       labelText: 'Telefone',
                     ),
-                    if (widget.products.length > 0) ...{
+                    if (widget.products != null &&
+                        widget.products.length > 0) ...{
                       MultiSelectFormField(
                         autovalidate: false,
                         chipBackGroundColor: theme.primaryColor,
@@ -144,9 +145,18 @@ class _VendorManagerScreenState extends State<VendorManagerScreen> {
                       ),
                     } else ...{
                       Padding(
-                        padding: EdgeInsets.symmetric(vertical: 12),
+                        padding: EdgeInsets.only(top: 24),
                         child: Text(
-                            'Não há nenhum produto cadastrado para poder selecionar'),
+                          'Não há /nenhum produto cadastrado para poder selecionar',
+                        ),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.only(bottom: 24),
+                        child: InvictusButton(
+                          onPressed: () => Get.offNamed('/product-manager'),
+                          title: 'Cadastrar produto',
+                        ),
                       ),
                     },
                     if (InvictusApp.role == 'admin') ...{

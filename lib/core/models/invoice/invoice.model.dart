@@ -79,6 +79,7 @@ class Invoice extends Model<String> {
 class CreateInvoice extends Model<String> {
   int discount;
   String title;
+  int quantity;
   List<Installment> installments;
   List<String> products;
 
@@ -87,6 +88,7 @@ class CreateInvoice extends Model<String> {
     this.products,
     this.title,
     this.installments,
+    this.quantity,
   });
 
   Map<String, dynamic> toJson() {
@@ -100,6 +102,7 @@ class CreateInvoice extends Model<String> {
               .toList()
           : null,
       'products': this.products,
+      'quantity': this.quantity,
     };
   }
 }

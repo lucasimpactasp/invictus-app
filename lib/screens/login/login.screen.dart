@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:invictus/controller/user/user.controller.dart';
 import 'package:invictus/core/widgets/button/button.widget.dart';
 import 'package:invictus/core/widgets/input/input.widget.dart';
+import 'package:invictus/main.dart';
 import 'package:invictus/services/oauth/oauth.service.dart';
 import 'package:oauth_dio/oauth_dio.dart';
 
@@ -37,7 +38,8 @@ class _LoginState extends State<Login> {
       final UserController userController = Get.put(UserController());
       setState(() => loading = true);
 
-      await userController.getUser();
+      final user = await userController.getUser();
+      InvictusApp.role = user.role;
 
       setState(() => loading = false);
 
