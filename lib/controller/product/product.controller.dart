@@ -17,6 +17,7 @@ class ProductController extends GetxController {
 
   Future<List<Product>> getMany() async {
     final List<Product> productsRes = await productService.getProducts();
+    productsRes.sort((a, b) => a.createdAt.isAfter(b.createdAt) ? -1 : 1);
 
     products.value = productsRes;
 

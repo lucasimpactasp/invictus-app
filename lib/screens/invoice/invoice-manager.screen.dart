@@ -33,14 +33,13 @@ class _InvoiceManagerState extends State<InvoiceManager> {
       MoneyMaskedTextController(leftSymbol: 'R\$ ');
   final MoneyMaskedTextController totalController =
       MoneyMaskedTextController(leftSymbol: 'R\$ ');
-  final TextEditingController quantityController =
-      TextEditingController(text: '1');
 
   final InvoiceController invoiceController = Get.put(InvoiceController());
   final ProductController productController = Get.put(ProductController());
 
   List<Installment> installments = [];
   List<String> products = [];
+  Map<String, int> quantities = {};
 
   Invoice invoice;
   bool showProducts = true;
@@ -51,7 +50,13 @@ class _InvoiceManagerState extends State<InvoiceManager> {
 
     if (widget.invoice != null) {
       loadForm();
+    } else {
+      init();
     }
+  }
+
+  void init() async {
+    await productController.getMany();
   }
 
   void loadForm() async {
@@ -80,121 +85,158 @@ class _InvoiceManagerState extends State<InvoiceManager> {
 
     return Scaffold(
       appBar: InvictusAppBar.getAppBar(),
-      body: Container(
-        margin: EdgeInsets.all(24),
-        child: ListView(
-          children: [
-            Form(
-              child: Column(
-                children: [
-                  Input(
-                    controller: titleController,
-                    enabled: widget.invoice == null,
-                    labelText: 'Título',
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Input(
-                      controller: quantityController,
+      body: GestureDetector(
+        onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
+        child: Container(
+          margin: EdgeInsets.all(24),
+          child: ListView(
+            children: [
+              Form(
+                child: Column(
+                  children: [
+                    Input(
+                      controller: titleController,
                       enabled: widget.invoice == null,
-                      labelText: 'Quantidade de produtos',
-                      keyboardType: TextInputType.number,
+                      labelText: 'Título',
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: PaymentParcel(
-                      valueController: totalController,
-                      invoice: invoice,
-                      onUpdateParcels: (List<Installment> installmentsRes) {
-                        setState(() => installments = installmentsRes);
-                      },
-                    ),
-                  ),
-                  Obx(() {
-                    if (productController.productsValue != null &&
-                        productController.productsValue.length > 0 &&
-                        showProducts) {
-                      return Padding(
-                        padding: EdgeInsets.only(top: 12),
-                        child: MultiSelectFormField(
-                          autovalidate: false,
-                          chipBackGroundColor: theme.primaryColor,
-                          chipLabelStyle:
-                              TextStyle(fontWeight: FontWeight.bold),
-                          dialogTextStyle:
-                              TextStyle(fontWeight: FontWeight.bold),
-                          checkBoxActiveColor: theme.primaryColor,
-                          checkBoxCheckColor: Colors.white,
-                          fillColor: Colors.white,
-                          border: InputBorder.none,
-                          dialogShapeBorder: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(12.0),
-                            ),
-                          ),
-                          title: Text(
-                            'Produtos da venda',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          dataSource: productController.productsValue
-                              .map((e) => e.toJson(addId: true))
-                              .toList(),
-                          textField: 'name',
-                          valueField: 'id',
-                          okButtonLabel: 'Adicionar',
-                          cancelButtonLabel: 'Cancelar',
-                          hintWidget: Text('Clique para selecionar'),
-                          initialValue: this.products,
-                          onSaved: (value) {
-                            if (value == null) return;
-                            setState(() {
-                              this.products = value
-                                  .map<String>((v) => v.toString())
-                                  .toList();
-                            });
-                          },
-                        ),
-                      );
-                    }
-
-                    return Container();
-                  }),
-                  if (widget.invoice == null) ...{
-                    Container(
-                      width: double.infinity,
-                      child: InvictusButton(
-                        backgroundColor: theme.primaryColor,
-                        textColor: Colors.white,
-                        onPressed: () async {
-                          this.installments.forEach((installment) {
-                            installment.title = titleController.text;
-                          });
-
-                          final CreateInvoice invoice = CreateInvoice(
-                            title: titleController.text,
-                            installments: this.installments,
-                            products: this.products,
-                            quantity: int.parse(this.quantityController.text),
-                          );
-
-                          await invoiceController.createInvoice(invoice);
-
-                          await invoiceController.getInvoices();
-
-                          Get.offAll(Home());
-
-                          BannerUtils.showBanner(
-                              'Feito!', 'Venda gerada com sucesso!');
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12),
+                      child: PaymentParcel(
+                        valueController: totalController,
+                        invoice: invoice,
+                        onUpdateParcels: (List<Installment> installmentsRes) {
+                          setState(() => installments = installmentsRes);
                         },
-                        title: 'Salvar',
                       ),
                     ),
-                  }
-                ],
+                    Obx(() {
+                      if (productController.productsValue != null &&
+                          productController.productsValue.length > 0 &&
+                          showProducts) {
+                        return Padding(
+                          padding: EdgeInsets.only(top: 12),
+                          child: MultiSelectFormField(
+                            autovalidate: false,
+                            chipBackGroundColor: theme.primaryColor,
+                            chipLabelStyle:
+                                TextStyle(fontWeight: FontWeight.bold),
+                            dialogTextStyle:
+                                TextStyle(fontWeight: FontWeight.bold),
+                            checkBoxActiveColor: theme.primaryColor,
+                            checkBoxCheckColor: Colors.white,
+                            fillColor: Colors.white,
+                            border: InputBorder.none,
+                            dialogShapeBorder: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(12.0),
+                              ),
+                            ),
+                            title: Text(
+                              'Produtos da venda',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            dataSource: productController.productsValue
+                                .map((e) => e.toJson(addId: true))
+                                .toList(),
+                            textField: 'name',
+                            valueField: 'id',
+                            okButtonLabel: 'Adicionar',
+                            cancelButtonLabel: 'Cancelar',
+                            hintWidget: Text('Clique para selecionar'),
+                            initialValue: this.products,
+                            onSaved: (value) {
+                              if (value == null) return;
+                              setState(() {
+                                this.products = value
+                                    .map<String>((v) => v.toString())
+                                    .toList();
+
+                                this.quantities = {};
+                              });
+                            },
+                          ),
+                        );
+                      }
+
+                      return Container();
+                    }),
+                    Column(
+                      children: this
+                          .products
+                          .asMap()
+                          .map((index, productUuid) {
+                            if (!this.quantities.containsKey(productUuid)) {
+                              setState(
+                                () => this.quantities.addAll(
+                                  {
+                                    productUuid: 0,
+                                  },
+                                ),
+                              );
+                            }
+                            return MapEntry(
+                              index,
+                              Padding(
+                                padding: const EdgeInsets.only(top: 12),
+                                child: Input(
+                                  enabled: widget.invoice == null,
+                                  labelText:
+                                      'Quantidade do produto ${index + 1}',
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (text) {
+                                    if (text != null && text.isNotEmpty) {
+                                      setState(
+                                        () => this.quantities.update(
+                                            productUuid,
+                                            (value) => int.parse(text)),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                            );
+                          })
+                          .values
+                          .toList(),
+                    ),
+                    if (widget.invoice == null) ...{
+                      Container(
+                        width: double.infinity,
+                        child: InvictusButton(
+                          backgroundColor: theme.primaryColor,
+                          textColor: Colors.white,
+                          onPressed: () async {
+                            this.installments.forEach((installment) {
+                              installment.title = titleController.text;
+                            });
+
+                            print(this.quantities);
+
+                            final CreateInvoice invoice = CreateInvoice(
+                              title: titleController.text,
+                              installments: this.installments,
+                              products: this.products,
+                              quantities: this.quantities,
+                            );
+
+                            await invoiceController.createInvoice(invoice);
+
+                            await invoiceController.getInvoices();
+
+                            Get.offAll(Home());
+
+                            BannerUtils.showBanner(
+                                'Feito!', 'Venda gerada com sucesso!');
+                          },
+                          title: 'Salvar',
+                        ),
+                      ),
+                    }
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

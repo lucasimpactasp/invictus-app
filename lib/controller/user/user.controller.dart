@@ -43,8 +43,6 @@ class UserController extends GetxController {
     final users = await userService.search(body);
     this.users.value = users;
 
-    print('asdsa');
-
     return users;
   }
 

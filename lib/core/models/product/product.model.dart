@@ -5,7 +5,7 @@ import 'package:invictus/core/models/vendor/vendor.model.dart';
 
 class Product extends Model<String> {
   String id;
-  String createdAt;
+  DateTime createdAt;
   String updateAt;
   String name;
   String description;
@@ -33,10 +33,16 @@ class Product extends Model<String> {
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
+    DateTime createdAt;
+
+    if (json['created_at'] != null) {
+      createdAt = DateTime.parse(json['created_at']);
+    }
+
     return Product(
       id: json['id'],
-      createdAt: json['createdAt'],
-      updateAt: json['updateAt'],
+      createdAt: createdAt,
+      updateAt: json['update_at'],
       name: json['name'],
       description: json['description'],
       price: json['price'],
